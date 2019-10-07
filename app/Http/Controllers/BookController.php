@@ -37,12 +37,12 @@ class BookController extends Controller
      */
     public function bookChapters(Request $request, $bookId)
     {
-        $catelogList = Chapter::where("book_id", $bookId)->get()->toArray();
+        $chapterList = Chapter::where("book_id", $bookId)->get()->toArray();
 
         return response()->json([
             'code' => 0,
             'msg' => 'ok',
-            'list' => $catelogList,
+            'list' => $chapterList,
         ]);
     }
 
@@ -53,8 +53,8 @@ class BookController extends Controller
      */
     public function chapterContents(Request $request, $chapterId)
     {
-        $catelog = Chapter::where("chapter_id", $chapterId)->first()->toArray();
-        $contents = QuanWenParser::convertCatelogContents($catelog['content_link']);
+        $chapter = Chapter::where("chapter_id", $chapterId)->first()->toArray();
+        $contents = QuanWenParser::convertCatelogContents($chapter['content_link']);
         return response()->json([
             'code' => 0,
             'msg' => 'ok',

@@ -16,7 +16,7 @@ class BookChapters extends Migration
         Schema::create('w_book_chapters', function (Blueprint $table){
             $table->increments("chapter_id");
             //所属书籍
-            $table->string('book_id');
+            $table->string('book_id', 128);
             //名称
             $table->string('title', 128);
             //索引
