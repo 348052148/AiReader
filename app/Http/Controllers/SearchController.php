@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Book;
-use App\Http\Parser\QuanWenParser;
+use App\Http\Service\SearchService;
 use Illuminate\Http\Request;
 
 class SearchController extends Controller
@@ -15,15 +15,7 @@ class SearchController extends Controller
      */
     public function searchBooks(Request $request)
     {
-        $keyword = $request->input('keyword', null);
-        $page = $request->input('page',1);
-        if (is_null($keyword)) {
-            $bookList = Book::All()->offset(($page-1) * 20)->limit(20)->toArray();
-        } else {
-            $bookList = Book::where("title","like","%{$keyword}%")->offset(($page-1) * 20)->limit(20)->get()->toArray();
-        }
-
-        //$bookList = QuanWenParser::convertSearchBooks($request->input('keyword'),$request->input('page',''));
+        $bookList = SearchService::getInstance()->search($request->input('keyword'),$request->input('page',''));
 
         return response()->json([
             'code' => 0,

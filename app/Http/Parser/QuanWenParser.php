@@ -1,9 +1,9 @@
 <?php
 namespace App\Http\Parser;
 
-use App\Http\Model\Book;
-use App\Http\Model\Catalog;
-use App\Http\Model\Classfly;
+use App\Http\Service\Book;
+use App\Http\Service\Catalog;
+use App\Http\Service\Classfly;
 use QL\QueryList;
 
 class QuanWenParser  implements IParser {

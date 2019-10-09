@@ -23,10 +23,10 @@ Route::get('/search', 'SearchController@searchBooks');
 Route::get('/get', 'IndexController@index');
 
 //获取分类列表
-Route::get('/classflys', 'ClassflyController@classflyList');
+Route::get('/classflys', 'ClassifyController@classifyList');
 
 //获取分类下书籍
-Route::get('/classflys/books', 'ClassflyController@classflyBooks');
+Route::get('/classflys/books', 'ClassifyController@classifyBooks');
 
 //获取书籍详情
 Route::get('/book/{book_id}', 'BookController@bookDetail');

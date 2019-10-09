@@ -3,23 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Http\Parser\QuanWenParser;
+use App\Http\Service\ClassifyService;
 use Illuminate\Http\Request;
 
-class ClassflyController extends Controller
+class ClassifyController extends Controller
 {
     /**
      * 获取分类列表
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function classflyList(Request $request)
+    public function classifyList(Request $request)
     {
-        $classflys = QuanWenParser::convertClassflys();
+        $classifyList = ClassifyService::getInstance()->getClassifyList();
 
         return response()->json([
                 'code' => 0,
                 'msg' => 'ok',
-                'list' => $classflys
+                'list' => $classifyList
             ]
         );
     }
@@ -29,10 +30,10 @@ class ClassflyController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function classflyBooks(Request $request)
+    public function classifyBooks(Request $request, $classifyId)
     {
-        $bookList = QuanWenParser::convertSearchClassfly(
-            $request->input('url'), $request->input('page', ''));
+        $bookList = ClassifyService::getInstance()->getClassifyBookList($classifyId);
+
         return response()->json([
                 'code' => 0,
                 'msg' => 'ok',
