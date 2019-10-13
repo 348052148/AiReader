@@ -22,11 +22,7 @@ class BookController extends Controller
 
         $book = $bookService->getBookInfoById($bookId);
 
-        return response()->json([
-            'code' => 0,
-            'msg' => 'ok',
-            'info' => $book,
-        ]);
+        return response()->json($book);
     }
 
     /**
@@ -38,11 +34,7 @@ class BookController extends Controller
     {
         $chapterList = $bookService->getBookChapters($bookId);
 
-        return response()->json([
-            'code' => 0,
-            'msg' => 'ok',
-            'list' => $chapterList,
-        ]);
+        return response()->json($chapterList);
     }
 
     /**
@@ -55,10 +47,6 @@ class BookController extends Controller
         $contents = $bookService->getChapterContents($chapterId);
         $contents = $textHandleService->ParserText($contents);
 
-        return response()->json([
-            'code' => 0,
-            'msg' => 'ok',
-            'contents' => $contents,
-        ]);
+        return response()->json($contents);
     }
 }

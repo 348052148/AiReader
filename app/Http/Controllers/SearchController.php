@@ -17,8 +17,8 @@ class SearchController extends Controller
         $bookList = $searchService->search($request->input('keyword'),$request->input('page',''));
 
         return response()->json([
-            'code' => 0,
-            'msg' => 'ok',
+            'page' => $request->input('page',''),
+            'count' => 20,
             'list' => $bookList
         ]);
     }

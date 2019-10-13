@@ -17,12 +17,7 @@ class ClassifyController extends Controller
     {
         $classifyList = $classifyService->getClassifyList();
 
-        return response()->json([
-                'code' => 0,
-                'msg' => 'ok',
-                'list' => $classifyList
-            ]
-        );
+        return response()->json($classifyList);
     }
 
     /**
@@ -34,11 +29,6 @@ class ClassifyController extends Controller
     {
         $bookList = ClassifyService::getInstance()->getClassifyBookList($classifyId);
 
-        return response()->json([
-                'code' => 0,
-                'msg' => 'ok',
-                'list' => $bookList
-            ]
-        );
+        return response()->json($bookList);
     }
 }

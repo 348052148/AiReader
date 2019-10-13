@@ -13,12 +13,27 @@ class LoginController extends Controller
 {
 
     /**
-     * 登陆
-     * @param Request $request
-     * @param WeChatService $weChatService
-     * @param $code
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @OA\Get(path="/api/wechat/{code}",
+     *   operationId="微信小程序登陆",
+     *   @OA\Parameter(
+     *     name="code",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(type="string")
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="成功"
+     *   ),
+     *   @OA\Response(
+     *     response=404,
+     *     description="没有找到用户"
+     *   ),
+     *   @OA\RequestBody(
+     *      description="Updated user object",
+     *      required=true,
+     *   )
+     * )
      */
     public function login(Request $request, WeChatService $weChatService, UserService $userService, $code)
     {
@@ -27,16 +42,11 @@ class LoginController extends Controller
 
         if (!$userInfo) {
             return response()->json([
-               'code' => 404,
                'msg' => 'find empty'
-            ]);
+            ], 404);
         }
 
-        return response()->json([
-            'code' => 0,
-            'msg' => 'ok',
-            'data' => $userInfo
-        ]);
+        return response()->json($userInfo);
     }
 
     /**
@@ -61,17 +71,11 @@ class LoginController extends Controller
 
         if (!$result) {
             return response()->json([
-                'code' => 500,
                 'msg' => 'insert fail',
-                'data' => []
-            ]);
+            ], 500);
         }
 
-        return response()->json([
-           'code' => 0,
-           'msg' => 'ok',
-           'data' => []
-        ]);
+        return response()->json([]);
     }
 
 

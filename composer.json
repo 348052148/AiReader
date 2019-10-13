@@ -10,7 +10,8 @@
         "jaeger/querylist": "^4.1",
         "jiaweixs/weapp": "^1.4",
         "laravel/framework": "5.5.*",
-        "laravel/tinker": "~1.0"
+        "laravel/tinker": "~1.0",
+        "zircote/swagger-php": "^3.0"
     },
     "require-dev": {
         "filp/whoops": "~2.0",
