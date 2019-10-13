@@ -16,11 +16,11 @@ class BookController extends Controller
      * @param Response $response
      * @return \Illuminate\Http\JsonResponse
      */
-    public function bookDetail(Request $request, Response $response, $bookId)
+    public function bookDetail(Request $request,BookService $bookService, $bookId)
     {
         //$book = QuanWenParser::convertBook($request->input("url"));
 
-        $book = BookService::getInstance()->getBookInfoById($bookId);
+        $book = $bookService->getBookInfoById($bookId);
 
         return response()->json([
             'code' => 0,
@@ -34,9 +34,9 @@ class BookController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function bookChapters(Request $request, $bookId)
+    public function bookChapters(Request $request, BookService $bookService, $bookId)
     {
-        $chapterList = BookService::getInstance()->getBookChapters($bookId);
+        $chapterList = $bookService->getBookChapters($bookId);
 
         return response()->json([
             'code' => 0,
@@ -50,10 +50,10 @@ class BookController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function chapterContents(Request $request, $chapterId)
+    public function chapterContents(Request $request, BookService $bookService, TextHandleService $textHandleService, $chapterId)
     {
-        $contents = BookService::getInstance()->getChapterContents($chapterId);
-        $contents = TextHandleService::getInstance()->ParserText($contents);
+        $contents = $bookService->getChapterContents($chapterId);
+        $contents = $textHandleService->ParserText($contents);
 
         return response()->json([
             'code' => 0,

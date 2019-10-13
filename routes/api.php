@@ -37,3 +37,7 @@ Route::get('/book/{book_id}/chapters', 'BookController@bookChapters');
 //获取章节内容
 Route::get('/chapter/{chapter_id}/contents', 'BookController@chapterContents');
 
+//小程序登陆
+Route::get('/wechat/login/{code}', 'LoginController@login');
+Route::post('/wechat/register', 'LoginController@register');
+

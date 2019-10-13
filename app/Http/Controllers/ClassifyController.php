@@ -13,9 +13,9 @@ class ClassifyController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function classifyList(Request $request)
+    public function classifyList(Request $request, ClassifyService $classifyService)
     {
-        $classifyList = ClassifyService::getInstance()->getClassifyList();
+        $classifyList = $classifyService->getClassifyList();
 
         return response()->json([
                 'code' => 0,
