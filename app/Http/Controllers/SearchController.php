@@ -10,6 +10,7 @@ class SearchController extends Controller
     /**
      * 搜索书籍
      * @param Request $request
+     * @param SearchService $searchService
      * @return \Illuminate\Http\JsonResponse
      */
     public function searchBooks(Request $request, SearchService $searchService)

@@ -11,6 +11,7 @@ class ClassifyController extends Controller
     /**
      * 获取分类列表
      * @param Request $request
+     * @param ClassifyService $classifyService
      * @return \Illuminate\Http\JsonResponse
      */
     public function classifyList(Request $request, ClassifyService $classifyService)
@@ -23,6 +24,7 @@ class ClassifyController extends Controller
     /**
      * 获取分类下书籍列表
      * @param Request $request
+     * @param $classifyId
      * @return \Illuminate\Http\JsonResponse
      */
     public function classifyBooks(Request $request, $classifyId)

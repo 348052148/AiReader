@@ -15,6 +15,9 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         'App\Events\StoreChapterContents' => [
             'App\Listeners\StoreChapterContentsListener'
+        ],
+        'App\Events\StoreBookContents' => [
+            'App\Listeners\StoreBookContentsListener'
         ]
     ];
 

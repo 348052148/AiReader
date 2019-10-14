@@ -52,6 +52,7 @@ class LoginController extends Controller
     /**
      * 注册信息
      * @param Request $request
+     * @param UserService $userService
      * @return \Illuminate\Http\JsonResponse
      */
     public function register(Request $request, UserService $userService)

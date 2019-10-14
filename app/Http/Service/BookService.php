@@ -2,7 +2,6 @@
 namespace App\Http\Service;
 use App\Book;
 use App\Chapter;
-use App\Events\StoreChapterContents;
 use App\Http\Parser\QuanWenParser;
 use Illuminate\Support\Facades\Cache;
 
@@ -54,7 +53,7 @@ class BookService {
             Cache::put("chapterContents:{$chapterId}", $contents, 600);
             return $contents;
         });
-        event(new StoreChapterContents($chapterId));
+
         return $contents;
     }
 
@@ -76,6 +75,25 @@ class BookService {
         $key = "chapterContents:{$nextChapter['chapter_id']}";
         if(!Cache::has($key)) {
             $contents = QuanWenParser::convertCatelogContents($nextChapter['content_link']);
+            Cache::put($key, $contents, 600);
+        }
+    }
+
+    /**
+     * 缓存book内容
+     * @param $bookId
+     */
+    public function storeBookContents($bookId)
+    {
+        $chapter = Chapter::where('book_id', $bookId)->where('index', 0)->first();
+        if (!$chapter) {
+            return;
+        }
+        $chapter = $chapter->toArray();
+        //缓存book
+        $key = "chapterContents:{$chapter['chapter_id']}";
+        if(!Cache::has($key)) {
+            $contents = QuanWenParser::convertCatelogContents($chapter['content_link']);
             Cache::put($key, $contents, 600);
         }
     }
