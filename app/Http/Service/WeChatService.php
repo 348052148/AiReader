@@ -6,18 +6,8 @@ use GuzzleHttp\Client;
 
 class WeChatService {
 
-    private static $instance;
-
     private $appId = "wx271f2fd48e6af64b";
     private $secret = "b55ab89af5c591a426d40b3ca814146c";
-
-    public static function getInstance()
-    {
-        if (self::$instance == null) {
-            self::$instance = new self();
-        }
-        return self::$instance;
-    }
 
     /**
      * 获取OPenid信息

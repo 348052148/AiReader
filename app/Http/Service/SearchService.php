@@ -4,16 +4,6 @@ use App\Book;
 
 class SearchService {
 
-    private static $instance;
-
-    public static function getInstance()
-    {
-        if (self::$instance == null) {
-            self::$instance = new self();
-        }
-        return self::$instance;
-    }
-
     /**
      * 搜索书籍服务
      * @param $keyword

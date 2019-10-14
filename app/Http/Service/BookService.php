@@ -2,19 +2,11 @@
 namespace App\Http\Service;
 use App\Book;
 use App\Chapter;
+use App\Events\StoreChapterContents;
 use App\Http\Parser\QuanWenParser;
+use Illuminate\Support\Facades\Cache;
 
 class BookService {
-
-    private static $instance;
-
-    public static function getInstance()
-    {
-        if (self::$instance == null) {
-            self::$instance = new self();
-        }
-        return self::$instance;
-    }
 
     /**
      * 获取书籍信息 By ID
@@ -55,9 +47,36 @@ class BookService {
      */
     public function getChapterContents($chapterId)
     {
-        $chapter = $this->getChapterInfoById($chapterId);
-        $contents = QuanWenParser::convertCatelogContents($chapter['content_link']);
-
+        //缓存章节内容
+        $contents = Cache::get("chapterContents:{$chapterId}", function () use ($chapterId){
+            $chapter = $this->getChapterInfoById($chapterId);
+            $contents = QuanWenParser::convertCatelogContents($chapter['content_link']);
+            Cache::put("chapterContents:{$chapterId}", $contents, 600);
+            return $contents;
+        });
+        event(new StoreChapterContents($chapterId));
         return $contents;
+    }
+
+    /**
+     * 缓存下一章数据
+     * @param $chapterId
+     * @return mixed
+     */
+    public function storeNextChapterContents($chapterId)
+    {
+        $chapter = Chapter::where('chapter_id', $chapterId)->first()->toArray();
+        $nextChapter = Chapter::where('index', $chapter['index'])
+            ->where("book_id", $chapter['book_id'])->first();
+        if (!$nextChapter) {
+            return;
+        }
+        $nextChapter = $nextChapter->toArray();
+        //缓存
+        $key = "chapterContents:{$nextChapter['chapter_id']}";
+        if(!Cache::has($key)) {
+            $contents = QuanWenParser::convertCatelogContents($nextChapter['content_link']);
+            Cache::put($key, $contents, 600);
+        }
     }
 }

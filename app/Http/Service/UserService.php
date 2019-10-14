@@ -7,15 +7,6 @@ use App\User;
 use GuzzleHttp\Client;
 
 class UserService {
-    private static $instance;
-
-    public static function getInstance()
-    {
-        if (self::$instance == null) {
-            self::$instance = new self();
-        }
-        return self::$instance;
-    }
 
     /**
      * 添加用户信息
