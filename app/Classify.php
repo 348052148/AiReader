@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Classify extends Model
 {
-    protected $table = "w_classify";
+    protected $table = "w_classifys";
 }

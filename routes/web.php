@@ -14,3 +14,12 @@
 Route::get('/', 'SwaggerController@apidoc');
 
 Route::get('json', 'SwaggerController@getJSON');
+
+Route::prefix("admin")->namespace('Admin')->group(function () {
+
+    Route::get('/', 'AdminController@index');
+
+    Route::get('/books/{page}','BookController@bookList');
+
+    Route::get('/classifys/{page}','ClassifyController@classifyList');
+});
