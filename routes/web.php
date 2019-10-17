@@ -20,6 +20,10 @@ Route::prefix("admin")->namespace('Admin')->group(function () {
     Route::get('/', 'AdminController@index');
 
     Route::get('/books/{page}','BookController@bookList');
+    Route::post('/books/{bookId}','BookController@updateBook');
+    Route::delete('/books/{bookId}','BookController@deleteBook');
 
     Route::get('/classifys/{page}','ClassifyController@classifyList');
+
+    Route::get('/book/{bookId}/chapters','BookController@bookChapterList');
 });

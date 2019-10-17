@@ -16,14 +16,16 @@ Vue.use(VueRouter)
 /**
  * Router Paths
  */
-import exampleComponet from './components/ExampleComponent.vue'
-import example from './components/ExampleComponent.vue'
+
 import books from './components/BookList.vue'
 import classifys from './components/Classifys.vue'
+import chapters from './components/ChapterList.vue'
+
 const routes = [
-    { path: '/', component: example },
+    { path: '/', component: books },
     { path: '/books', component: books },
-    { path: '/classify', component: classifys }
+    { path: '/classify', component: classifys },
+    { path: '/chapters', component: chapters }
 ];
 
 const router = new VueRouter({
