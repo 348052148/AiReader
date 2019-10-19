@@ -17,16 +17,28 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('/image', 'ImageController@image');
+
 //搜索结果
 Route::get('/search', 'SearchController@searchBooks');
 
-Route::get('/get', 'IndexController@index');
+//复合搜索
+Route::get('/book/search', 'SearchController@searchMixedBooks');
+
+//获取热门书籍
+Route::get('/hot/books', 'IndexController@hotBooks');
+
+//获取推荐书籍
+Route::get('/recommend/books', 'IndexController@recommendBooks');
+
+//获取所有书籍
+Route::get('/book/all', 'IndexController@index');
 
 //获取分类列表
-Route::get('/classflys', 'ClassifyController@classifyList');
+Route::get('/classifys', 'ClassifyController@classifyList');
 
 //获取分类下书籍
-Route::get('/classflys/books', 'ClassifyController@classifyBooks');
+Route::get('/classifys/books', 'ClassifyController@classifyBooks');
 
 //获取书籍详情
 Route::get('/book/{book_id}', 'BookController@bookDetail');

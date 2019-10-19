@@ -26,4 +26,7 @@ Route::prefix("admin")->namespace('Admin')->group(function () {
     Route::get('/classifys/{page}','ClassifyController@classifyList');
 
     Route::get('/book/{bookId}/chapters','BookController@bookChapterList');
+
+
+    Route::get('/users/{page}','UserController@userList');
 });

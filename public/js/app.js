@@ -1091,6 +1091,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_Classifys_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__components_Classifys_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_ChapterList_vue__ = __webpack_require__(64);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_ChapterList_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__components_ChapterList_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_UserList_vue__ = __webpack_require__(67);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_UserList_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__components_UserList_vue__);
 
 /**
  * First we will load all of this project's JavaScript dependencies which
@@ -1114,7 +1116,8 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vue_
 
 
 
-var routes = [{ path: '/', component: __WEBPACK_IMPORTED_MODULE_2__components_BookList_vue___default.a }, { path: '/books', component: __WEBPACK_IMPORTED_MODULE_2__components_BookList_vue___default.a }, { path: '/classify', component: __WEBPACK_IMPORTED_MODULE_3__components_Classifys_vue___default.a }, { path: '/chapters', component: __WEBPACK_IMPORTED_MODULE_4__components_ChapterList_vue___default.a }];
+
+var routes = [{ path: '/', component: __WEBPACK_IMPORTED_MODULE_2__components_BookList_vue___default.a }, { path: '/books', component: __WEBPACK_IMPORTED_MODULE_2__components_BookList_vue___default.a }, { path: '/classify', component: __WEBPACK_IMPORTED_MODULE_3__components_Classifys_vue___default.a }, { path: '/chapters', component: __WEBPACK_IMPORTED_MODULE_4__components_ChapterList_vue___default.a }, { path: '/users', component: __WEBPACK_IMPORTED_MODULE_5__components_UserList_vue___default.a }];
 
 var router = new __WEBPACK_IMPORTED_MODULE_1_vue_router__["a" /* default */]({
   routes: routes // (缩写) 相当于 routes: routes
@@ -47747,7 +47750,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 console.log(res);
                 //分页处理
                 _this.showPages = [];
-                if (_this.lastPage - _this.currentPage <= 10 && _this.lastPage - _this.currentPage >= 0) {
+                if (_this.lastPage - _this.currentPage <= 10 && _this.lastPage - _this.currentPage > 0) {
                     for (var i = _this.lastPage - 10; i <= _this.lastPage; i++) {
                         _this.showPages.push(i);
                     }
@@ -48581,6 +48584,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     components: {},
@@ -48645,6 +48649,10 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("li", { attrs: { role: "presentation" } }, [
           _c("a", { attrs: { href: "#/books" } }, [_vm._v("书籍管理")])
+        ]),
+        _vm._v(" "),
+        _c("li", { attrs: { role: "presentation" } }, [
+          _c("a", { attrs: { href: "#/users" } }, [_vm._v("用户管理")])
         ]),
         _vm._v(" "),
         _c("li", { attrs: { role: "presentation" } }, [
@@ -48832,6 +48840,279 @@ if (false) {
   module.hot.accept()
   if (module.hot.data) {
     require("vue-hot-reload-api")      .rerender("data-v-020e2eb8", module.exports)
+  }
+}
+
+/***/ }),
+/* 67 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(2)
+/* script */
+var __vue_script__ = __webpack_require__(68)
+/* template */
+var __vue_template__ = __webpack_require__(69)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/UserList.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-0bf3ffc0", Component.options)
+  } else {
+    hotAPI.reload("data-v-0bf3ffc0", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 68 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    mounted: function mounted() {
+        this.getUsersByPage(1);
+    },
+    data: function data() {
+        return {
+            currentPage: 1,
+            lastPage: 1,
+            showPages: [],
+            userList: [{}]
+        };
+    },
+
+    methods: {
+        getUsersByPage: function getUsersByPage(page) {
+            var _this = this;
+
+            axios.default.get("http://127.0.0.1:8000/admin/users/" + page).then(function (res) {
+                _this.userList = res.data.data;
+                _this.currentPage = res.data.current_page;
+                _this.lastPage = res.data.last_page;
+                console.log(res);
+                //分页处理
+                _this.showPages = [];
+                if (_this.lastPage - _this.currentPage <= 10 && _this.lastPage - _this.currentPage > 0) {
+                    for (var i = _this.lastPage - 10; i <= _this.lastPage; i++) {
+                        _this.showPages.push(i);
+                    }
+                } else if (_this.currentPage - 5 <= 0) {
+                    var pageLen = _this.lastPage > 10 ? 10 : _this.lastPage;
+                    for (var _i = 1; _i <= pageLen; _i++) {
+                        _this.showPages.push(_i);
+                    }
+                } else {
+                    for (var _i2 = _this.currentPage - 5; _i2 <= _this.currentPage + 5; _i2++) {
+                        _this.showPages.push(_i2);
+                    }
+                }
+                console.log(_this.showPages);
+            });
+        }
+    }
+
+});
+
+/***/ }),
+/* 69 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "container-fluid" }, [
+    _c("table", { staticClass: "table table-bordered table-hover" }, [
+      _vm._m(0),
+      _vm._v(" "),
+      _vm._m(1),
+      _vm._v(" "),
+      _c(
+        "tbody",
+        _vm._l(_vm.userList, function(item) {
+          return _c("tr", [
+            _c("td", [_c("p", [_vm._v(_vm._s(item.user_id))])]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(item.nick_name))]),
+            _vm._v(" "),
+            _c("td", [
+              _c("img", {
+                attrs: { width: "100", height: "125", src: item.avatar_url }
+              })
+            ]),
+            _vm._v(" "),
+            _c("td", [
+              _vm._v(
+                _vm._s(item.country) +
+                  " " +
+                  _vm._s(item.city) +
+                  " " +
+                  _vm._s(item.province)
+              )
+            ]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(item.openid))])
+          ])
+        }),
+        0
+      )
+    ]),
+    _vm._v(" "),
+    _c("nav", { attrs: { "aria-label": "Page navigation" } }, [
+      _c(
+        "ul",
+        { staticClass: "pagination" },
+        [
+          _vm._m(2),
+          _vm._v(" "),
+          _vm._l(_vm.showPages, function(page) {
+            return _c(
+              "li",
+              {
+                class: { active: page == _vm.currentPage },
+                on: {
+                  click: function($event) {
+                    return _vm.getBooksByPage(page)
+                  }
+                }
+              },
+              [_c("a", [_vm._v(_vm._s(page))])]
+            )
+          }),
+          _vm._v(" "),
+          _vm._m(3)
+        ],
+        2
+      )
+    ])
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("caption", [_c("h3", [_vm._v("书籍列表")])])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("td", [_vm._v("编号")]),
+        _vm._v(" "),
+        _c("td", [_vm._v("用户名")]),
+        _vm._v(" "),
+        _c("td", [_vm._v("头像")]),
+        _vm._v(" "),
+        _c("td", { attrs: { width: "120" } }, [_vm._v("地区")]),
+        _vm._v(" "),
+        _c("td", { attrs: { width: "120" } }, [_vm._v("openid")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("li", [
+      _c("a", { attrs: { href: "#", "aria-label": "Previous" } }, [
+        _c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("«")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("li", [
+      _c("a", { attrs: { href: "#", "aria-label": "Next" } }, [
+        _c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("»")])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-0bf3ffc0", module.exports)
   }
 }
 

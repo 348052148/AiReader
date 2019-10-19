@@ -158,7 +158,7 @@
                     console.log(res)
                     //分页处理
                     this.showPages = [];
-                    if (this.lastPage - this.currentPage <= 10 && this.lastPage - this.currentPage >= 0 ) {
+                    if (this.lastPage - this.currentPage <= 10 && this.lastPage - this.currentPage > 0 ) {
                         for(let i=this.lastPage-10; i <= this.lastPage; i++) {
                             this.showPages.push(i)
                         }

@@ -20,12 +20,14 @@ Vue.use(VueRouter)
 import books from './components/BookList.vue'
 import classifys from './components/Classifys.vue'
 import chapters from './components/ChapterList.vue'
+import users from './components/UserList.vue'
 
 const routes = [
     { path: '/', component: books },
     { path: '/books', component: books },
     { path: '/classify', component: classifys },
-    { path: '/chapters', component: chapters }
+    { path: '/chapters', component: chapters },
+    { path: '/users', component: users },
 ];
 
 const router = new VueRouter({

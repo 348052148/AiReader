@@ -12,6 +12,7 @@
             <ul class="nav nav-pills nav-stacked col-sm-2 col-lg-2 text-center">
                 <li role="presentation" ><a href="#/classify">分类管理</a></li>
                 <li role="presentation"><a href="#/books">书籍管理</a></li>
+                <li role="presentation"><a href="#/users">用户管理</a></li>
                 <li role="presentation"><a href="#/sets">系统配置</a></li>
             </ul>
             <div class="col-sm-10 col-lg-10">
