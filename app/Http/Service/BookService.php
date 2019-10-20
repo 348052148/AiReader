@@ -50,7 +50,7 @@ class BookService {
         $contents = Cache::get("chapterContents:{$chapterId}", function () use ($chapterId){
             $chapter = $this->getChapterInfoById($chapterId);
             $contents = QuanWenParser::convertCatelogContents($chapter['content_link']);
-            Cache::put("chapterContents:{$chapterId}", $contents, 600);
+            Cache::put("chapterContents:{$chapterId}", $contents, 86400);
             return $contents;
         });
 
@@ -75,7 +75,7 @@ class BookService {
         $key = "chapterContents:{$nextChapter['chapter_id']}";
         if(!Cache::has($key)) {
             $contents = QuanWenParser::convertCatelogContents($nextChapter['content_link']);
-            Cache::put($key, $contents, 600);
+            Cache::put($key, $contents, 86400);
         }
     }
 
@@ -94,7 +94,7 @@ class BookService {
         $key = "chapterContents:{$chapter['chapter_id']}";
         if(!Cache::has($key)) {
             $contents = QuanWenParser::convertCatelogContents($chapter['content_link']);
-            Cache::put($key, $contents, 600);
+            Cache::put($key, $contents, 86400);
         }
     }
 }

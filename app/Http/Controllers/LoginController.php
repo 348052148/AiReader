@@ -42,7 +42,8 @@ class LoginController extends Controller
 
         if (!$userInfo) {
             return response()->json([
-               'msg' => 'find empty'
+                'openid' => $weInfo['openid'],
+                'msg' => 'find empty'
             ], 404);
         }
 
