@@ -4,20 +4,21 @@ namespace App\Listeners;
 
 use App\Events\StoreChapterContents;
 use App\Http\Service\BookService;
+use App\Jobs\StoreChapterContentsJob;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Log;
 
 class StoreChapterContentsListener
 {
-    private $bookService;
     /**
      * Create the event listener.
      *
      * @return void
      */
-    public function __construct(BookService $bookService)
+    public function __construct()
     {
-        $this->bookService = $bookService;
+
     }
 
     /**
@@ -28,6 +29,7 @@ class StoreChapterContentsListener
      */
     public function handle(StoreChapterContents $event)
     {
-        $this->bookService->storeNextChapterContents($event->getChapterId());
+        Log::info("章节缓存事件执行");
+        StoreChapterContentsJob::dispatch($event->getChapterId());
     }
 }

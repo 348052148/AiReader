@@ -17,6 +17,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('/', 'IndexController@index');
+
 Route::get('/image', 'ImageController@image');
 
 //搜索结果
@@ -30,6 +32,9 @@ Route::get('/hot/books', 'IndexController@hotBooks');
 
 //获取推荐书籍
 Route::get('/recommend/books', 'IndexController@recommendBooks');
+
+//获取bannar
+Route::get('/bannar/list', 'IndexController@bannarBooks');
 
 //获取所有书籍
 Route::get('/book/all', 'IndexController@index');

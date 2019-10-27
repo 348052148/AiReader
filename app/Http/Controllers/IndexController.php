@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Book;
+use App\Jobs\StoreChapterContentsJob;
 use Illuminate\Http\Request;
 
 class IndexController extends Controller
@@ -11,8 +12,8 @@ class IndexController extends Controller
 
     public function index(Request $request)
     {
-        $booklist = Book::all();
-        return response()->json($booklist);
+        StoreChapterContentsJob::dispatch(1270);
+        return ["123"];
     }
 
     /**
@@ -22,11 +23,19 @@ class IndexController extends Controller
      */
     public function bannarBooks(Request $request)
     {
-        return response()->json([
-            'url' => '',
-            'img' => '',
-            'title' => '逆天改命'
-        ]);
+        $banarList = [
+            [
+                'title' => '推荐书籍',
+                'img' => 'https://sta-op.douyucdn.cn/nggsys/2019/10/16/e5e1d8fdac31df37f638d678903410be.jpg',
+                'link' => ''
+            ],
+            [
+                'title' => '书籍',
+                'img' => 'https://images.unsplash.com/photo-1551214012-84f95e060dee?w=1200',
+                'link' => ''
+            ]
+        ];
+        return response()->json($banarList);
     }
 
     /**
