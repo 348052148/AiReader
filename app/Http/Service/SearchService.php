@@ -30,9 +30,6 @@ class SearchService {
     public function searchByAttr($attr, $page)
     {
         $bookList = Book::offset(($page-1) * 20)->limit(20)->get()->toArray();
-        foreach($bookList as &$val){
-            $val['cover'] = 'http://127.0.0.1:8000/api/image?url='.$val['cover'];
-        }
 
         return $bookList;
     }
