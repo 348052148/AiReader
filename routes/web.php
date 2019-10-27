@@ -11,10 +11,13 @@
 |
 */
 
+//swagger文档
 Route::get('/', 'SwaggerController@apidoc');
 
+//swagger文档Json
 Route::get('json', 'SwaggerController@getJSON');
 
+//后台管理接口
 Route::prefix("admin")->namespace('Admin')->group(function () {
 
     Route::get('/', 'AdminController@index');
@@ -30,3 +33,6 @@ Route::prefix("admin")->namespace('Admin')->group(function () {
 
     Route::get('/users/{page}','UserController@userList');
 });
+
+//书籍图片
+Route::get('/book/image/{book_id}.jpeg', 'BookController@image');

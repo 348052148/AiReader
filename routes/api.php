@@ -54,7 +54,6 @@ Route::get('/chapter/{chapter_id}/contents', 'BookController@chapterContents');
 
 //获取书籍封面图
 Route::get('/book/{book_id}/image', 'BookController@image');
-Route::get('/book/image/{book_id}.jpeg', 'BookController@image');
 
 //小程序登陆
 Route::get('/wechat/login/{code}', 'LoginController@login');
