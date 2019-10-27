@@ -19,8 +19,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::get('/', 'IndexController@index');
 
-Route::get('/image', 'ImageController@image');
-
 //搜索结果
 Route::get('/search', 'SearchController@searchBooks');
 
@@ -53,6 +51,9 @@ Route::get('/book/{book_id}/chapters', 'BookController@bookChapters');
 
 //获取章节内容
 Route::get('/chapter/{chapter_id}/contents', 'BookController@chapterContents');
+
+//获取书籍封面图
+Route::get('/book/{book_id}/image', 'BookController@image');
 
 //小程序登陆
 Route::get('/wechat/login/{code}', 'LoginController@login');

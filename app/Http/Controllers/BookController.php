@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Events\StoreBookContents;
 use App\Events\StoreChapterContents;
 use App\Http\Service\BookService;
+use App\Http\Service\ImageService;
 use App\Http\Service\TextHandleService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class BookController extends Controller
 {
@@ -58,5 +60,17 @@ class BookController extends Controller
         event(new StoreChapterContents($chapterId));
 
         return response()->json($contents);
+    }
+
+    /**
+     * @param ImageService $imageService
+     * @param $bookId
+     * @return StreamedResponse
+     */
+    public function image(ImageService $imageService, $bookId)
+    {
+        return response()->stream(function () use ($imageService, $bookId) {
+            echo $imageService->getImage($bookId);
+        }, 200, ['Content-Type' => 'image/jpeg']);
     }
 }
