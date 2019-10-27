@@ -19,7 +19,7 @@ class ImageService
      */
     public function getBookCoverImage($bookId)
     {
-        $fileName = storage_path("img") . "{$bookId}.jpeg";
+        $fileName = storage_path("img") . DIRECTORY_SEPARATOR . "{$bookId}.jpeg";
         if (file_exists($fileName)) {
             $contents = file_get_contents($fileName);
         } else {
