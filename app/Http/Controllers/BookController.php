@@ -6,8 +6,9 @@ use App\Events\StoreBookContents;
 use App\Events\StoreChapterContents;
 use App\Http\Service\BookService;
 use App\Http\Service\TextHandleService;
+use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class BookController extends Controller
 {
@@ -17,7 +18,8 @@ class BookController extends Controller
      * @param Request $request
      * @param BookService $bookService
      * @param $bookId
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
+     * @throws Exception
      */
     public function bookDetail(Request $request,BookService $bookService, $bookId)
     {
@@ -32,7 +34,7 @@ class BookController extends Controller
      * @param Request $request
      * @param BookService $bookService
      * @param $bookId
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function bookChapters(Request $request, BookService $bookService, $bookId)
     {
@@ -47,7 +49,7 @@ class BookController extends Controller
      * @param BookService $bookService
      * @param TextHandleService $textHandleService
      * @param $chapterId
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function chapterContents(Request $request, BookService $bookService, TextHandleService $textHandleService, $chapterId)
     {

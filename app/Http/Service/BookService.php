@@ -1,20 +1,29 @@
 <?php
+
 namespace App\Http\Service;
+
 use App\Book;
 use App\Chapter;
 use App\Http\Parser\QuanWenParser;
+use Exception;
 use Illuminate\Support\Facades\Cache;
 
-class BookService {
+class BookService
+{
 
     /**
      * 获取书籍信息 By ID
      * @param $bookId
      * @return mixed
+     * @throws Exception
      */
     public function getBookInfoById($bookId)
     {
-        return Book::where("book_id", $bookId)->first()->toArray();
+        $book = Book::where("book_id", $bookId)->first();
+        if (!$book) {
+            throw new Exception('不存在此书籍');
+        }
+        return $book->toArray();
     }
 
     /**
@@ -24,18 +33,25 @@ class BookService {
      */
     public function getBookChapters($bookId)
     {
-        $chapterList = Chapter::where("book_id", $bookId)->get()->toArray();
-        return $chapterList;
+        $chapterList = Chapter::where("book_id", $bookId)->get();
+        if (!$chapterList) {
+            return [];
+        }
+        return $chapterList->toArray();
     }
 
     /**
      * 获取章节元信息 By ID
      * @param $chapterId
      * @return mixed
+     * @throws Exception
      */
     public function getChapterInfoById($chapterId)
     {
         $chapter = Chapter::where("chapter_id", $chapterId)->first()->toArray();
+        if (!$chapter) {
+            throw new Exception('未找到此章节');
+        }
         return $chapter;
     }
 
@@ -47,7 +63,7 @@ class BookService {
     public function getChapterContents($chapterId)
     {
         //缓存章节内容
-        $contents = Cache::get("chapterContents:{$chapterId}", function () use ($chapterId){
+        $contents = Cache::get("chapterContents:{$chapterId}", function () use ($chapterId) {
             $chapter = $this->getChapterInfoById($chapterId);
             $contents = QuanWenParser::convertCatelogContents($chapter['content_link']);
             Cache::put("chapterContents:{$chapterId}", $contents, 86400);
@@ -73,7 +89,7 @@ class BookService {
         $nextChapter = $nextChapter->toArray();
         //缓存
         $key = "chapterContents:{$nextChapter['chapter_id']}";
-        if(!Cache::has($key)) {
+        if (!Cache::has($key)) {
             $contents = QuanWenParser::convertCatelogContents($nextChapter['content_link']);
             Cache::put($key, $contents, 86400);
         }
@@ -92,7 +108,7 @@ class BookService {
         $chapter = $chapter->toArray();
         //缓存book
         $key = "chapterContents:{$chapter['chapter_id']}";
-        if(!Cache::has($key)) {
+        if (!Cache::has($key)) {
             $contents = QuanWenParser::convertCatelogContents($chapter['content_link']);
             Cache::put($key, $contents, 86400);
         }
