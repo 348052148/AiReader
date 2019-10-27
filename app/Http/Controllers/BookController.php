@@ -76,7 +76,7 @@ class BookController extends Controller
     public function image(ImageService $imageService, $bookId)
     {
         return response()->stream(function () use ($imageService, $bookId) {
-            echo $imageService->getImage($bookId);
+            echo $imageService->getBookCoverImage($bookId);
         }, 200, ['Content-Type' => 'image/jpeg']);
     }
 }

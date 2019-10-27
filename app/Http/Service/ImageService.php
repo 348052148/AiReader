@@ -11,10 +11,24 @@ class ImageService
         $this->bookService = $bookService;
     }
 
-    public function getImage($bookId)
+    /**
+     *获取书籍封面图片
+     * @param $bookId
+     * @return false|string
+     * @throws \Exception
+     */
+    public function getBookCoverImage($bookId)
     {
-        $book = $this->bookService->getBookInfoById($bookId);
-        return file_get_contents($book['cover']);
+        $fileName = storage_path("img") . "{$bookId}.jpeg";
+        if (file_exists($fileName)) {
+            $contents = file_get_contents($fileName);
+        } else {
+            $book = $this->bookService->getBookInfoById($bookId);
+            $contents = file_get_contents($book['cover']);
+            file_put_contents($fileName, $contents);
+        }
+
+        return $contents;
     }
 
     public function image($url)
