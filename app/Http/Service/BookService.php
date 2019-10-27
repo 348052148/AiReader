@@ -7,6 +7,7 @@ use App\Chapter;
 use App\Http\Parser\QuanWenParser;
 use Exception;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class BookService
 {
@@ -64,6 +65,7 @@ class BookService
     {
         //缓存章节内容
         $contents = Cache::get("chapterContents:{$chapterId}", function () use ($chapterId) {
+            Log::info("未命中章节{$chapterId}缓存");
             $chapter = $this->getChapterInfoById($chapterId);
             $contents = QuanWenParser::convertCatelogContents($chapter['content_link']);
             Cache::put("chapterContents:{$chapterId}", $contents, 86400);
