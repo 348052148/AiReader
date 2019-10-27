@@ -83,7 +83,7 @@ class BookService
     public function storeNextChapterContents($chapterId)
     {
         $chapter = Chapter::where('chapter_id', $chapterId)->first()->toArray();
-        $nextChapter = Chapter::where('index', $chapter['index'])
+        $nextChapter = Chapter::where('index', $chapter['index'] + 1)
             ->where("book_id", $chapter['book_id'])->first();
         if (!$nextChapter) {
             return;
