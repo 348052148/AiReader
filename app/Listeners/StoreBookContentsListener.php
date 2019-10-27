@@ -4,16 +4,17 @@ namespace App\Listeners;
 
 use App\Events\StoreBookContents;
 use App\Http\Service\BookService;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Jobs\StoreBookContentsJob;
+use Illuminate\Support\Facades\Log;
 
 class StoreBookContentsListener
 {
     private $bookService;
+
     /**
      * Create the event listener.
      *
-     * @return void
+     * @param BookService $bookService
      */
     public function __construct(BookService $bookService)
     {
@@ -28,6 +29,7 @@ class StoreBookContentsListener
      */
     public function handle(StoreBookContents $event)
     {
-        $this->bookService->storeBookContents($event->getBookId());
+        Log::info('书籍缓存事件');
+        StoreBookContentsJob::dispatch($event->getBookId());
     }
 }

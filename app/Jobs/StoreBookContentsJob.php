@@ -28,6 +28,7 @@ class StoreBookContentsJob implements ShouldQueue
     /**
      * Execute the job.
      *
+     * @param BookService $bookService
      * @return void
      */
     public function handle(BookService $bookService)
