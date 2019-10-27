@@ -2,6 +2,8 @@
 
 namespace App\Http\Service;
 
+use Exception;
+
 class ImageService
 {
     private $bookService;
@@ -15,7 +17,7 @@ class ImageService
      *获取书籍封面图片
      * @param $bookId
      * @return false|string
-     * @throws \Exception
+     * @throws Exception
      */
     public function getBookCoverImage($bookId)
     {
@@ -23,9 +25,18 @@ class ImageService
         if (file_exists($fileName)) {
             $contents = file_get_contents($fileName);
         } else {
-            $book = $this->bookService->getBookInfoById($bookId);
-            $contents = file_get_contents($book['cover']);
-            file_put_contents($fileName, $contents);
+            try {
+                $book = $this->bookService->getBookInfoById($bookId);
+                $contents = file_get_contents($book['cover']);
+                if (!$contents) {
+                    throw new Exception('Not Fund');
+                }
+            }catch (Exception $exception) {
+                //默认书籍
+                $contents = file_get_contents('http://www.quanshuwang.com/modules/article/images/nocover.jpg');
+            } finally {
+                file_put_contents($fileName, $contents);
+            }
         }
 
         return $contents;
