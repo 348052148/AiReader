@@ -13,6 +13,34 @@ class BookService
 {
 
     /**
+     * 获取热门书籍
+     * @return array
+     */
+    public function getHotBooks()
+    {
+        $books = Book::limit(6)->get();
+        if (!$books) {
+            return [];
+        }
+
+        return $books->toArray();
+    }
+
+    /**
+     * 获取推荐书籍
+     * @return array
+     */
+    public function getRecommendBooks()
+    {
+        $books = Book::offset(10)->limit(6)->get();
+        if (!$books) {
+            return [];
+        }
+
+        return $books->toArray();
+    }
+
+    /**
      * 获取书籍信息 By ID
      * @param $bookId
      * @return mixed
