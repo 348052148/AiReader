@@ -49,11 +49,17 @@ Route::get('/book/{book_id}', 'BookController@bookDetail');
 //获取章节目录
 Route::get('/book/{book_id}/chapters', 'BookController@bookChapters');
 
+//获取类似的推荐书籍
+Route::get('/book/{book_id}/recommends', 'BookController@recommendAsBooks');
+
 //获取章节内容
 Route::get('/chapter/{chapter_id}/contents', 'BookController@chapterContents');
 
 //获取书籍封面图
 Route::get('/book/{book_id}/image', 'BookController@image');
+
+//用户信息
+Route::get('/user/{openid}', 'UserController@userInfo');
 
 //小程序登陆
 Route::get('/wechat/login/{code}', 'LoginController@login');

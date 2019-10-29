@@ -35,7 +35,7 @@ class LoginController extends Controller
      *   )
      * )
      */
-    public function login(Request $request, WeChatService $weChatService, UserService $userService, $code)
+    public function login(WeChatService $weChatService, UserService $userService, $code)
     {
         $weInfo = $weChatService->getOpenid($code);
         $userInfo = $userService->fundUserByOpenId($weInfo['openid']);

@@ -56,6 +56,16 @@ class BookService
     }
 
     /**
+     * 获取书籍章节数
+     * @param $bookId
+     * @return mixed
+     */
+    public function getBookChapterCount($bookId)
+    {
+        return Chapter::where("book_id", $bookId)->count();
+    }
+
+    /**
      * 获取书籍的章节列表
      * @param $bookId
      * @return mixed

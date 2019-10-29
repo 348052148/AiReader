@@ -27,9 +27,23 @@ class BookController extends Controller
     public function bookDetail(Request $request,BookService $bookService, $bookId)
     {
         $book = $bookService->getBookInfoById($bookId);
+        $book['chapter_count'] = $bookService->getBookChapterCount($bookId);
         event(new StoreBookContents($bookId));
 
         return response()->json($book);
+    }
+
+    /**
+     * 根据书籍推荐
+     * @param BookService $bookService
+     * @param $bookId
+     * @return JsonResponse
+     */
+    public function recommendAsBooks(BookService $bookService, $bookId)
+    {
+        $recommendBooks = $bookService->getRecommendBooks();
+
+        return response()->json($recommendBooks);
     }
 
     /**
