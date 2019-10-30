@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 /**
- * @OA\Info(title="阅读商城API接口", version="0.1.9")
+ * @OA\Info(title="阅读小程序API接口", version="0.1.9")
  */
 
 /**

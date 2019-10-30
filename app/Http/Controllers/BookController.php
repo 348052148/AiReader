@@ -17,6 +17,58 @@ class BookController extends Controller
 {
 
     /**
+     * @SWG\Definition(
+     *     definition="Book",
+     *     type="object",
+     *     required={"username"},
+     *     @SWG\Property(
+     *         property="book_id",
+     *         type="string",
+     *         description="书籍id"
+     *      ),
+     *    @SWG\Property(
+     *         property="title",
+     *         type="string",
+     *         description="书籍名称"
+     *       ),
+     *    @SWG\Property(
+     *          property="cover",
+     *          type="string",
+     *          description="封面图"
+     *       ),
+     *    @SWG\Property(
+     *           property="author",
+     *           type="string",
+     *           description="作者名称"
+     *       ),
+     *    @SWG\Property(
+     *           property="classify_id",
+     *           type="string",
+     *           description="分类id"
+     *       ),
+     *    @SWG\Property(
+     *            property="chapter_count",
+     *            type="string",
+     *            description="章节数目"
+     *      ),
+     * )
+     */
+
+
+
+    /**
+     * @SWG\Get(
+     *      path="/book/{book_id}",
+     *     summary="获取书籍信息",
+     *     description="根据书籍id获取书籍信息",
+     *     @SWG\Response(
+     *          response=200,
+     *          description="书籍信息",
+     *           @SWG\Schema(ref="#/definitions/Book")
+     *      )
+     * )
+     */
+    /**
      * 获取小说信息
      * @param Request $request
      * @param BookService $bookService
@@ -32,6 +84,22 @@ class BookController extends Controller
 
         return response()->json($book);
     }
+
+    /**
+     * @SWG\Get(
+     *      path="/book/{book_id}/recommend",
+     *     summary="获取推荐书籍",
+     *     description="根据书籍id获取推荐书籍",
+     *     @SWG\Response(
+     *          response=200,
+     *          description="书籍信息",
+     *          @SWG\Schema(
+     *              type="array",
+     *              @SWG\Items(ref="#/definitions/Book")
+     *         )
+     *      )
+     * )
+     */
 
     /**
      * 根据书籍推荐
