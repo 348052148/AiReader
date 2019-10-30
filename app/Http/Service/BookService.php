@@ -114,6 +114,23 @@ class BookService
     }
 
     /**
+     * 获取书籍章节信息 by 章节索引
+     * @param $bookId
+     * @param $index
+     * @return mixed
+     * @throws Exception
+     */
+    public function getBookChapterByIndex($bookId, $index)
+    {
+        $chapter = Chapter::where('book_id', $bookId)->where('index', $index)->first();
+        if (!$chapter) {
+            throw new Exception('未找到此章节');
+        }
+
+        return $chapter->toArray();
+    }
+
+    /**
      * 缓存下一章数据
      * @param $chapterId
      * @return mixed

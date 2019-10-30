@@ -55,6 +55,9 @@ Route::get('/book/{book_id}/recommends', 'BookController@recommendAsBooks');
 //获取章节内容
 Route::get('/chapter/{chapter_id}/contents', 'BookController@chapterContents');
 
+//获取书籍指定索引章节内容
+Route::get('/book/{book_id}/chapter/{index}/contents', 'BookController@chapterContentsByIndex');
+
 //获取书籍封面图
 Route::get('/book/{book_id}/image', 'BookController@image');
 
