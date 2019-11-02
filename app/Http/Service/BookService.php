@@ -144,7 +144,9 @@ class BookService extends BaseService
      */
     public function getBookChapterByIndex($bookId, $index)
     {
-        $chapter = Chapter::where('book_id', $bookId)->where('index', $index)->first();
+        $chapters = $this->getBookChapters($bookId);
+        $chapter = collect($chapters)->where('index', $index)->first();
+//        $chapter = Chapter::where('book_id', $bookId)->where('index', $index)->first();
         if (!$chapter) {
             throw new Exception('未找到此章节');
         }
