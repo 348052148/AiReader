@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Book;
 use App\Http\Service\BookService;
 use App\Jobs\StoreChapterContentsJob;
 use Illuminate\Http\JsonResponse;
@@ -12,10 +11,11 @@ class IndexController extends Controller
 {
     //
 
-    public function index(Request $request)
+    public function index(BookService $bookService)
     {
-        StoreChapterContentsJob::dispatch(1270);
-        return ["123"];
+        echo encrypt("12321qweqweqwewqeq3");
+//        $chapters = $bookService->getBookChapters('0202b04d8aebd2afc56c586fcd228b87');
+//        return response()->json($chapters);
     }
 
     /**

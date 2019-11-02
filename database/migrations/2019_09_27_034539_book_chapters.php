@@ -24,7 +24,8 @@ class BookChapters extends Migration
             //url
             $table->string('content_link', 128);
             $table->timestamp('created_at')->nullable();
-
+            $table->index('index', 'index');
+            $table->index('book_id', 'book_id');
         });
     }
 

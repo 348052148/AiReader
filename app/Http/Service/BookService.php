@@ -8,8 +8,10 @@ use App\Http\Parser\QuanWenParser;
 use Exception;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Srv\ChapterRequest;
+use Srv\ChapterResponse;
 
-class BookService
+class BookService extends BaseService
 {
 
     /**
@@ -72,11 +74,31 @@ class BookService
      */
     public function getBookChapters($bookId)
     {
-        $chapterList = Chapter::where("book_id", $bookId)->get();
-        if (!$chapterList) {
-            return [];
-        }
-        return $chapterList->toArray();
+        $chapters = Cache::get("chapters:{$bookId}", function () use ($bookId) {
+            $book = $this->getBookInfoById($bookId);
+            list($result, $status) = $this->_simpleRequest(
+                '/srv.ParserService/ParserChapters',
+                new ChapterRequest(['link' => $book['chapter_link']]),
+                [ChapterResponse::class, 'decode']
+            )->wait();
+            if ($status->code) {
+                throw new Exception($status->details);
+            }
+            $chapters = [];
+            foreach ($result->getChapters() as $chapter) {
+                $chapters[] = [
+                    'book_id' => $bookId,
+                    'title' => $chapter->getTitle(),
+                    'index' => $chapter->getIndex(),
+                    'content_link' => $chapter->getContentsLink(),
+                ];
+            }
+            //保存书籍章节信息
+            Cache::put("chapters:{$bookId}", $chapters, 86400);
+            return $chapters;
+        });
+
+        return $chapters;
     }
 
     /**
@@ -169,5 +191,18 @@ class BookService
             $contents = QuanWenParser::convertCatelogContents($chapter['content_link']);
             Cache::put($key, $contents, 86400);
         }
+    }
+
+    /**
+     * 更新书籍章节数
+     * @param $bookId
+     * @param $chapterCount
+     * @return mixed
+     */
+    public function updateBookChapterCount($bookId, $chapterCount)
+    {
+        return Book::where('book_id', $bookId)->update([
+            'chapter_count' => $chapterCount
+        ]);
     }
 }
