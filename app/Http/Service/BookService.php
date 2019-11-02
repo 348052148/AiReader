@@ -64,7 +64,9 @@ class BookService extends BaseService
      */
     public function getBookChapterCount($bookId)
     {
-        return Chapter::where("book_id", $bookId)->count();
+        $chapters = $this->getBookChapters($bookId);
+        $chapterCount = collect($chapters)->count();
+        return $chapterCount;
     }
 
     /**
@@ -91,6 +93,7 @@ class BookService extends BaseService
                     'title' => $chapter->getTitle(),
                     'index' => $chapter->getIndex(),
                     'content_link' => $chapter->getContentsLink(),
+                    'chapter_id' => "{$bookId}:{$chapter->getIndex()}",
                 ];
             }
             //保存书籍章节信息
@@ -109,7 +112,8 @@ class BookService extends BaseService
      */
     public function getChapterInfoById($chapterId)
     {
-        $chapter = Chapter::where("chapter_id", $chapterId)->first()->toArray();
+        list($bookId, $index) = explode(":", $chapterId);
+        $chapter = $this->getBookChapterByIndex($bookId, $index);
         if (!$chapter) {
             throw new Exception('未找到此章节');
         }
@@ -146,28 +150,26 @@ class BookService extends BaseService
     {
         $chapters = $this->getBookChapters($bookId);
         $chapter = collect($chapters)->where('index', $index)->first();
-//        $chapter = Chapter::where('book_id', $bookId)->where('index', $index)->first();
         if (!$chapter) {
             throw new Exception('未找到此章节');
         }
 
-        return $chapter->toArray();
+        return $chapter;
     }
 
     /**
      * 缓存下一章数据
      * @param $chapterId
      * @return mixed
+     * @throws Exception
      */
     public function storeNextChapterContents($chapterId)
     {
-        $chapter = Chapter::where('chapter_id', $chapterId)->first()->toArray();
-        $nextChapter = Chapter::where('index', $chapter['index'] + 1)
-            ->where("book_id", $chapter['book_id'])->first();
+        list($bookId, $index) = explode(':', $chapterId);
+        $nextChapter = $this->getBookChapterByIndex($bookId, $index + 1);
         if (!$nextChapter) {
             return;
         }
-        $nextChapter = $nextChapter->toArray();
         //缓存
         $key = "chapterContents:{$nextChapter['chapter_id']}";
         if (!Cache::has($key)) {
@@ -179,14 +181,14 @@ class BookService extends BaseService
     /**
      * 缓存book内容
      * @param $bookId
+     * @throws Exception
      */
     public function storeBookContents($bookId)
     {
-        $chapter = Chapter::where('book_id', $bookId)->where('index', 0)->first();
+        $chapter = $this->getBookChapterByIndex($bookId, 0);
         if (!$chapter) {
             return;
         }
-        $chapter = $chapter->toArray();
         //缓存book
         $key = "chapterContents:{$chapter['chapter_id']}";
         if (!Cache::has($key)) {
