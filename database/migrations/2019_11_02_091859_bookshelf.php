@@ -13,7 +13,7 @@ class Bookshelf extends Migration
      */
     public function up()
     {
-        Schema::create('w_books', function (Blueprint $table) {
+        Schema::create('w_bookshelf', function (Blueprint $table) {
             $table->integer('user_id', 11);     // 用户id
             $table->string('book_id', 128);             // 书籍id
             $table->integer('read_num', 11);    // 读取记录
