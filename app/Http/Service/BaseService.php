@@ -14,7 +14,9 @@ class BaseService extends BaseStub
 
     public function __construct()
     {
-        $this->hostname = ":8088";
+        $host = config('services.gorpc.domain');
+        $port = config('services.gorpc.port');
+        $this->hostname = "{$host}:{$port}"; 
         $this->opts = [
             'credentials' => ChannelCredentials::createInsecure()
         ];
