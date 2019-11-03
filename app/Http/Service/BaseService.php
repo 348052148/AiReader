@@ -16,7 +16,7 @@ class BaseService extends BaseStub
     {
         $host = config('services.gorpc.domain');
         $port = config('services.gorpc.port');
-        $this->hostname = "{$host}:{$port}"; 
+        $this->hostname = "{$host}:{$port}";
         $this->opts = [
             'credentials' => ChannelCredentials::createInsecure()
         ];

@@ -31,6 +31,9 @@ Route::get('/hot/books', 'IndexController@hotBooks');
 //获取推荐书籍
 Route::get('/recommend/books', 'IndexController@recommendBooks');
 
+//聚合首页数据
+Route::get('/home/books', 'IndexController@homeBooks');
+
 //获取bannar
 Route::get('/bannar/list', 'IndexController@bannarBooks');
 

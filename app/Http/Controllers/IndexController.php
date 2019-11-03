@@ -19,6 +19,35 @@ class IndexController extends Controller
     }
 
     /**
+     * 聚合首页推荐热门数据
+     * @param BookService $bookService
+     * @return JsonResponse
+     */
+    public function homeBooks(BookService $bookService)
+    {
+        $hotBooks = $bookService->getHotBooks();
+        $recommendBooks = $bookService->getRecommendBooks();
+        $banarList = [
+            [
+                'title' => '推荐书籍',
+                'img' => 'https://sta-op.douyucdn.cn/nggsys/2019/10/16/e5e1d8fdac31df37f638d678903410be.jpg',
+                'link' => ''
+            ],
+            [
+                'title' => '书籍',
+                'img' => 'https://images.unsplash.com/photo-1551214012-84f95e060dee?w=1200',
+                'link' => ''
+            ]
+        ];
+
+        return response()->json([
+            'hot' => $hotBooks,
+            'recommend' =>  $recommendBooks,
+            'bannars' =>$banarList,
+        ]);
+    }
+
+    /**
      * 展示橱窗
      * @param Request $request
      * @return JsonResponse
