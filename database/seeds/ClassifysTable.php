@@ -51,6 +51,10 @@ class ClassifysTable extends Seeder
             [
                 'title' => "科幻小说",
                 'classify_id' => 10,
+            ],
+            [
+                'title' => "美文名著",
+                'classify_id' => 11,
             ]
         ]);
     }

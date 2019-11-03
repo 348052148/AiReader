@@ -13,7 +13,7 @@ class IndexController extends Controller
 
     public function index(BookService $bookService)
     {
-        echo encrypt("12321qweqweqwewqeq3");
+//        echo md5("神级大魔头拉姆连载");
 //        $chapters = $bookService->getBookChapters('0202b04d8aebd2afc56c586fcd228b87');
 //        return response()->json($chapters);
     }
