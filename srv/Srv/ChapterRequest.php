@@ -16,10 +16,17 @@ use Google\Protobuf\Internal\GPBUtil;
 class ChapterRequest extends \Google\Protobuf\Internal\Message
 {
     /**
+     *链接
      *
      * Generated from protobuf field <code>string link = 1;</code>
      */
     private $link = '';
+    /**
+     *源站
+     *
+     * Generated from protobuf field <code>string source = 2;</code>
+     */
+    private $source = '';
 
     /**
      * Constructor.
@@ -28,6 +35,9 @@ class ChapterRequest extends \Google\Protobuf\Internal\Message
      *     Optional. Data for populating the Message object.
      *
      *     @type string $link
+     *          链接
+     *     @type string $source
+     *          源站
      * }
      */
     public function __construct($data = NULL) {
@@ -36,6 +46,7 @@ class ChapterRequest extends \Google\Protobuf\Internal\Message
     }
 
     /**
+     *链接
      *
      * Generated from protobuf field <code>string link = 1;</code>
      * @return string
@@ -46,6 +57,7 @@ class ChapterRequest extends \Google\Protobuf\Internal\Message
     }
 
     /**
+     *链接
      *
      * Generated from protobuf field <code>string link = 1;</code>
      * @param string $var
@@ -55,6 +67,32 @@ class ChapterRequest extends \Google\Protobuf\Internal\Message
     {
         GPBUtil::checkString($var, True);
         $this->link = $var;
+
+        return $this;
+    }
+
+    /**
+     *源站
+     *
+     * Generated from protobuf field <code>string source = 2;</code>
+     * @return string
+     */
+    public function getSource()
+    {
+        return $this->source;
+    }
+
+    /**
+     *源站
+     *
+     * Generated from protobuf field <code>string source = 2;</code>
+     * @param string $var
+     * @return $this
+     */
+    public function setSource($var)
+    {
+        GPBUtil::checkString($var, True);
+        $this->source = $var;
 
         return $this;
     }
