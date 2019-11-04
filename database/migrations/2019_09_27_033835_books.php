@@ -34,6 +34,9 @@ class Books extends Migration
             $table->timestamp('created_at')->nullable();
             //主键索引
             $table->primary("book_id");
+            $table->index('title', 'title');
+            $table->index('author', 'author');
+            $table->index('status', 'status');
         });
     }
 

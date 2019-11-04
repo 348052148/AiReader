@@ -8,8 +8,10 @@ use App\Http\Parser\QuanWenParser;
 use Exception;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Srv\ChapterRequest;
+use Srv\ChapterResponse;
 
-class BookService
+class BookService extends BaseService
 {
 
     /**
@@ -62,7 +64,9 @@ class BookService
      */
     public function getBookChapterCount($bookId)
     {
-        return Chapter::where("book_id", $bookId)->count();
+        $chapters = $this->getBookChapters($bookId);
+        $chapterCount = collect($chapters)->count();
+        return $chapterCount;
     }
 
     /**
@@ -72,11 +76,32 @@ class BookService
      */
     public function getBookChapters($bookId)
     {
-        $chapterList = Chapter::where("book_id", $bookId)->get();
-        if (!$chapterList) {
-            return [];
-        }
-        return $chapterList->toArray();
+        $chapters = Cache::get("chapters:{$bookId}", function () use ($bookId) {
+            $book = $this->getBookInfoById($bookId);
+            list($result, $status) = $this->_simpleRequest(
+                '/srv.ParserService/ParserChapters',
+                new ChapterRequest(['link' => $book['chapter_link']]),
+                [ChapterResponse::class, 'decode']
+            )->wait();
+            if ($status->code) {
+                throw new Exception($status->details);
+            }
+            $chapters = [];
+            foreach ($result->getChapters() as $chapter) {
+                $chapters[] = [
+                    'book_id' => $bookId,
+                    'title' => $chapter->getTitle(),
+                    'index' => $chapter->getIndex(),
+                    'content_link' => $chapter->getContentsLink(),
+                    'chapter_id' => "{$bookId}:{$chapter->getIndex()}",
+                ];
+            }
+            //保存书籍章节信息
+            Cache::put("chapters:{$bookId}", $chapters, 86400);
+            return $chapters;
+        });
+
+        return $chapters;
     }
 
     /**
@@ -87,7 +112,8 @@ class BookService
      */
     public function getChapterInfoById($chapterId)
     {
-        $chapter = Chapter::where("chapter_id", $chapterId)->first()->toArray();
+        list($bookId, $index) = explode(":", $chapterId);
+        $chapter = $this->getBookChapterByIndex($bookId, $index);
         if (!$chapter) {
             throw new Exception('未找到此章节');
         }
@@ -114,19 +140,36 @@ class BookService
     }
 
     /**
+     * 获取书籍章节信息 by 章节索引
+     * @param $bookId
+     * @param $index
+     * @return mixed
+     * @throws Exception
+     */
+    public function getBookChapterByIndex($bookId, $index)
+    {
+        $chapters = $this->getBookChapters($bookId);
+        $chapter = collect($chapters)->where('index', $index)->first();
+        if (!$chapter) {
+            throw new Exception('未找到此章节');
+        }
+
+        return $chapter;
+    }
+
+    /**
      * 缓存下一章数据
      * @param $chapterId
      * @return mixed
+     * @throws Exception
      */
     public function storeNextChapterContents($chapterId)
     {
-        $chapter = Chapter::where('chapter_id', $chapterId)->first()->toArray();
-        $nextChapter = Chapter::where('index', $chapter['index'] + 1)
-            ->where("book_id", $chapter['book_id'])->first();
+        list($bookId, $index) = explode(':', $chapterId);
+        $nextChapter = $this->getBookChapterByIndex($bookId, $index + 1);
         if (!$nextChapter) {
             return;
         }
-        $nextChapter = $nextChapter->toArray();
         //缓存
         $key = "chapterContents:{$nextChapter['chapter_id']}";
         if (!Cache::has($key)) {
@@ -138,19 +181,32 @@ class BookService
     /**
      * 缓存book内容
      * @param $bookId
+     * @throws Exception
      */
     public function storeBookContents($bookId)
     {
-        $chapter = Chapter::where('book_id', $bookId)->where('index', 0)->first();
+        $chapter = $this->getBookChapterByIndex($bookId, 0);
         if (!$chapter) {
             return;
         }
-        $chapter = $chapter->toArray();
         //缓存book
         $key = "chapterContents:{$chapter['chapter_id']}";
         if (!Cache::has($key)) {
             $contents = QuanWenParser::convertCatelogContents($chapter['content_link']);
             Cache::put($key, $contents, 86400);
         }
+    }
+
+    /**
+     * 更新书籍章节数
+     * @param $bookId
+     * @param $chapterCount
+     * @return mixed
+     */
+    public function updateBookChapterCount($bookId, $chapterCount)
+    {
+        return Book::where('book_id', $bookId)->update([
+            'chapter_count' => $chapterCount
+        ]);
     }
 }

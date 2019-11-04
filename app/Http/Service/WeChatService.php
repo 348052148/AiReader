@@ -3,6 +3,7 @@ namespace App\Http\Service;
 
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 
 class WeChatService {
 
@@ -13,7 +14,7 @@ class WeChatService {
      * 获取OPenid信息
      * @param $code
      * @return mixed
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
     public function getOpenid($code)
     {
@@ -28,7 +29,7 @@ class WeChatService {
     /**
      * 获取AccessToken
      * @return mixed
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
     public function getAccessToken()
     {
@@ -44,7 +45,7 @@ class WeChatService {
      * @param $token
      * @param $openId
      * @return mixed
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
     public function getUserInfo($token, $openId)
     {

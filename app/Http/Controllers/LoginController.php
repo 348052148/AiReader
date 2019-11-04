@@ -60,7 +60,7 @@ class LoginController extends Controller
     {
         $userInfo = $request->input('data');
 
-        $result = $userService->addUser([
+        $userData = [
             'openid' => $request->input('openid'),
             'city' => $userInfo['city'],
             'avatar_url' => $userInfo['avatarUrl'],
@@ -69,7 +69,8 @@ class LoginController extends Controller
             'language' => $userInfo['language'],
             'nick_name' => $userInfo['nickName'],
             'province' => $userInfo['province'],
-        ]);
+        ];
+        $result = $userService->addUser($userData);
 
         if (!$result) {
             return response()->json([
@@ -77,7 +78,7 @@ class LoginController extends Controller
             ], 500);
         }
 
-        return response()->json([]);
+        return response()->json($userData);
     }
 
 

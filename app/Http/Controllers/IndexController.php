@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Book;
 use App\Http\Service\BookService;
 use App\Jobs\StoreChapterContentsJob;
 use Illuminate\Http\JsonResponse;
@@ -12,10 +11,40 @@ class IndexController extends Controller
 {
     //
 
-    public function index(Request $request)
+    public function index(BookService $bookService)
     {
-        StoreChapterContentsJob::dispatch(1270);
-        return ["123"];
+//        echo md5("神级大魔头拉姆连载");
+//        $chapters = $bookService->getBookChapters('0202b04d8aebd2afc56c586fcd228b87');
+//        return response()->json($chapters);
+    }
+
+    /**
+     * 聚合首页推荐热门数据
+     * @param BookService $bookService
+     * @return JsonResponse
+     */
+    public function homeBooks(BookService $bookService)
+    {
+        $hotBooks = $bookService->getHotBooks();
+        $recommendBooks = $bookService->getRecommendBooks();
+        $banarList = [
+            [
+                'title' => '推荐书籍',
+                'img' => 'https://sta-op.douyucdn.cn/nggsys/2019/10/16/e5e1d8fdac31df37f638d678903410be.jpg',
+                'link' => ''
+            ],
+            [
+                'title' => '书籍',
+                'img' => 'https://images.unsplash.com/photo-1551214012-84f95e060dee?w=1200',
+                'link' => ''
+            ]
+        ];
+
+        return response()->json([
+            'hot' => $hotBooks,
+            'recommend' =>  $recommendBooks,
+            'bannars' =>$banarList,
+        ]);
     }
 
     /**

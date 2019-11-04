@@ -31,6 +31,9 @@ Route::get('/hot/books', 'IndexController@hotBooks');
 //获取推荐书籍
 Route::get('/recommend/books', 'IndexController@recommendBooks');
 
+//聚合首页数据
+Route::get('/home/books', 'IndexController@homeBooks');
+
 //获取bannar
 Route::get('/bannar/list', 'IndexController@bannarBooks');
 
@@ -54,6 +57,9 @@ Route::get('/book/{book_id}/recommends', 'BookController@recommendAsBooks');
 
 //获取章节内容
 Route::get('/chapter/{chapter_id}/contents', 'BookController@chapterContents');
+
+//获取书籍指定索引章节内容
+Route::get('/book/{book_id}/chapter/{index}/contents', 'BookController@chapterContentsByIndex');
 
 //获取书籍封面图
 Route::get('/book/{book_id}/image', 'BookController@image');

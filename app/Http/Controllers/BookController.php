@@ -76,7 +76,7 @@ class BookController extends Controller
      * @return JsonResponse
      * @throws Exception
      */
-    public function bookDetail(Request $request,BookService $bookService, $bookId)
+    public function bookDetail(Request $request, BookService $bookService, $bookId)
     {
         $book = $bookService->getBookInfoById($bookId);
         $book['chapter_count'] = $bookService->getBookChapterCount($bookId);
@@ -130,13 +130,12 @@ class BookController extends Controller
 
     /**
      * 获取章节内容
-     * @param Request $request
      * @param BookService $bookService
      * @param TextHandleService $textHandleService
      * @param $chapterId
      * @return JsonResponse
      */
-    public function chapterContents(Request $request, BookService $bookService, TextHandleService $textHandleService, $chapterId)
+    public function chapterContents(BookService $bookService, TextHandleService $textHandleService, $chapterId)
     {
         $time1 = microtime(true);
         $contents = $bookService->getChapterContents($chapterId);
@@ -145,9 +144,28 @@ class BookController extends Controller
         $time3 = microtime(true);
         event(new StoreChapterContents($chapterId));
         $time4 = microtime(true);
-        Log::info("获取内容执行时间统计：",[$time2-$time1, $time3-$time2, $time4 - $time3]);
+        Log::info("获取内容执行时间统计：", [$time2 - $time1, $time3 - $time2, $time4 - $time3]);
 
         return response()->json($contents);
+    }
+
+    /**
+     * 获取书籍指定索引章节内容
+     * @param BookService $bookService
+     * @param TextHandleService $textHandleService
+     * @param $bookId
+     * @param $index
+     * @return JsonResponse
+     * @throws Exception
+     */
+    public function chapterContentsByIndex(BookService $bookService, TextHandleService $textHandleService, $bookId, $index)
+    {
+        $chapter = $bookService->getBookChapterByIndex($bookId, $index);
+        $contents = $textHandleService->ParserText(
+            $bookService->getChapterContents($chapter['chapter_id']));
+        event(new StoreChapterContents($chapter['chapter_id']));
+
+        return response()->json(['title'=> $chapter['title'], 'contents' => $contents]);
     }
 
     /**

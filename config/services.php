@@ -34,5 +34,9 @@ return [
         'key' => env('STRIPE_KEY'),
         'secret' => env('STRIPE_SECRET'),
     ],
+    'gorpc' => [
+        'domain' => env('RPC_DOMAIN', ''),
+        'port'   => env('RPC_PORT', '9001')
+    ],
 
 ];
