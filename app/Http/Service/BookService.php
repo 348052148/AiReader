@@ -9,6 +9,8 @@ use App\Http\Parser\QuanWenParser;
 use Exception;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Srv\ChapterContentRequest;
+use Srv\ChapterContentResponse;
 use Srv\ChapterRequest;
 use Srv\ChapterResponse;
 
@@ -153,8 +155,23 @@ class BookService extends BaseService
         $contents = Cache::get("chapterContents:{$chapterId}", function () use ($chapterId) {
             Log::info("未命中章节{$chapterId}缓存");
             $chapter = $this->getChapterInfoById($chapterId);
-            $contents = QuanWenParser::convertCatelogContents($chapter['content_link']);
+
+            //$contents = QuanWenParser::convertCatelogContents($chapter['content_link']);
+            //解析内容服务
+            list($result, $status) = $this->_simpleRequest(
+            '/srv.ParserService/ParserChapterContents',
+                new ChapterContentRequest(['link' => $chapter['content_link'], 'source' => 'zadu']),
+                [ChapterContentResponse::class, 'decode']
+            )->wait();
+
+            if ($status->code) {
+                throw new Exception($status->details);
+            }
+
+            $contents = $result->getContents();
+
             Cache::put("chapterContents:{$chapterId}", $contents, 86400);
+
             return $contents;
         });
 
