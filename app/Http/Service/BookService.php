@@ -118,6 +118,7 @@ class BookService extends BaseService
                     'index' => $chapter->getIndex(),
                     'content_link' => $chapter->getContentsLink(),
                     'chapter_id' => "{$bookId}:{$chapter->getIndex()}",
+                    'source' => $chapter->getSource(),
                 ];
             }
             //保存书籍章节信息
@@ -159,8 +160,8 @@ class BookService extends BaseService
             //$contents = QuanWenParser::convertCatelogContents($chapter['content_link']);
             //解析内容服务
             list($result, $status) = $this->_simpleRequest(
-            '/srv.ParserService/ParserChapterContents',
-                new ChapterContentRequest(['link' => $chapter['content_link'], 'source' => 'zadu']),
+                '/srv.ParserService/ParserChapterContents',
+                new ChapterContentRequest(['link' => $chapter['content_link'], 'source' => $chapter['source']]),
                 [ChapterContentResponse::class, 'decode']
             )->wait();
 
