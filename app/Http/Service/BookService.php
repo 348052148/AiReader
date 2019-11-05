@@ -83,13 +83,18 @@ class BookService extends BaseService
     public function getBookSource($bookId)
     {
         $bookSource = BookSource::where('book_id', $bookId)->first();
+        $sourceFlag = 'quanwen';
         if ($bookSource) {
             $bookSource = $bookSource->toArray();
-            return ['chapter_link' => $bookSource['chapter_link'], 'source' => 'zadu'];
+            if ($bookSource['source'] == '杂读小说网') {
+                $sourceFlag = 'zadu';
+            } else if ($bookSource['source'] == '新笔趣阁') {
+                $sourceFlag = 'xbiquge';
+            }
+            return ['chapter_link' => $bookSource['chapter_link'], 'source' => $sourceFlag];
         } else {
             $book = $this->getBookInfoById($bookId);
-
-            return ['chapter_link' => $book['chapter_link'], 'source' => 'quanwen'];
+            return ['chapter_link' => $book['chapter_link'], 'source' => $sourceFlag];
         }
     }
 
