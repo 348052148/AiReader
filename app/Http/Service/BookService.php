@@ -127,7 +127,7 @@ class BookService extends BaseService
                 ];
             }
             //保存书籍章节信息
-            Cache::put("chapters:{$bookId}", $chapters, 86400);
+            Cache::put("chapters:{$bookId}", $chapters, 900);
             return $chapters;
         });
 
@@ -160,24 +160,8 @@ class BookService extends BaseService
         //缓存章节内容
         $contents = Cache::get("chapterContents:{$chapterId}", function () use ($chapterId) {
             Log::info("未命中章节{$chapterId}缓存");
-            $chapter = $this->getChapterInfoById($chapterId);
-
-            //$contents = QuanWenParser::convertCatelogContents($chapter['content_link']);
-            //解析内容服务
-            list($result, $status) = $this->_simpleRequest(
-                '/srv.ParserService/ParserChapterContents',
-                new ChapterContentRequest(['link' => $chapter['content_link'], 'source' => $chapter['source']]),
-                [ChapterContentResponse::class, 'decode']
-            )->wait();
-
-            if ($status->code) {
-                throw new Exception($status->details);
-            }
-
-            $contents = $result->getContents();
-
+            $contents = $this->cacheChapterContents($chapterId);
             Cache::put("chapterContents:{$chapterId}", $contents, 86400);
-
             return $contents;
         });
 
@@ -218,9 +202,29 @@ class BookService extends BaseService
         //缓存
         $key = "chapterContents:{$nextChapter['chapter_id']}";
         if (!Cache::has($key)) {
-            $contents = QuanWenParser::convertCatelogContents($nextChapter['content_link']);
+            //$contents = QuanWenParser::convertCatelogContents($nextChapter['content_link']);
+            $contents = $this->cacheChapterContents($nextChapter['chapter_id']);
             Cache::put($key, $contents, 86400);
         }
+    }
+
+    protected function cacheChapterContents($chapterId)
+    {
+        $chapter = $this->getChapterInfoById($chapterId);
+
+        //$contents = QuanWenParser::convertCatelogContents($chapter['content_link']);
+        //解析内容服务
+        list($result, $status) = $this->_simpleRequest(
+            '/srv.ParserService/ParserChapterContents',
+            new ChapterContentRequest(['link' => $chapter['content_link'], 'source' => $chapter['source']]),
+            [ChapterContentResponse::class, 'decode']
+        )->wait();
+
+        if ($status->code) {
+            throw new Exception($status->details);
+        }
+
+        return $result->getContents();
     }
 
     /**
@@ -237,7 +241,8 @@ class BookService extends BaseService
         //缓存book
         $key = "chapterContents:{$chapter['chapter_id']}";
         if (!Cache::has($key)) {
-            $contents = QuanWenParser::convertCatelogContents($chapter['content_link']);
+            //$contents = QuanWenParser::convertCatelogContents($chapter['content_link']);
+            $contents = $this->cacheChapterContents($chapter['chapter_id']);
             Cache::put($key, $contents, 86400);
         }
     }
