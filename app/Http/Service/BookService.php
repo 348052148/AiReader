@@ -4,8 +4,6 @@ namespace App\Http\Service;
 
 use App\Book;
 use App\BookSource;
-use App\Chapter;
-use App\Http\Parser\QuanWenParser;
 use Exception;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -13,6 +11,9 @@ use Srv\ChapterContentRequest;
 use Srv\ChapterContentResponse;
 use Srv\ChapterRequest;
 use Srv\ChapterResponse;
+use Srv\SourceChapterRequest;
+use Srv\SourceChapterRequest_ChapterSource;
+use Srv\SourceChapterResponse;
 
 class BookService extends BaseService
 {
@@ -99,6 +100,91 @@ class BookService extends BaseService
     }
 
     /**
+     * 获取书籍资源列表
+     * @param $bookId
+     * @return array
+     * @throws Exception
+     */
+    public function getBookSourceList($bookId)
+    {
+        $bookSourceList = [];
+        $book = $this->getBookInfoById($bookId);
+        $bookSourceList[] = [
+            'chapter_link' => $book['chapter_link'],
+            'source' => $this->getSourceFlag($book['source'])
+        ];
+        $bookSources = BookSource::where('book_id', $bookId)->get();
+        if ($bookSources) {
+            $bookSources = $bookSources->toArray();
+            foreach ($bookSources as $bookSource) {
+                $bookSourceList[] = [
+                    'chapter_link' => $bookSource['chapter_link'],
+                    'source' => $this->getSourceFlag($bookSource['source'])
+                ];
+            }
+        }
+
+        return $bookSourceList;
+    }
+
+    /**
+     * 获取源flag
+     * @param $source
+     * @return string
+     */
+    protected function getSourceFlag($source)
+    {
+        if ($source == '全文网') {
+            return 'quanwen';
+        } elseif ($source == '新笔趣阁') {
+            return 'xbiquge';
+        } elseif ($source == '杂读小说网') {
+            return 'zadu';
+        }
+    }
+
+    /**
+     * 获取最新源
+     *
+     * @param $bookId
+     * @return array
+     * @throws Exception
+     */
+    public function getLastBookSource($bookId)
+    {
+        $sourceList = $this->getBookSourceList($bookId);
+        $sourceReq = [];
+        foreach ($sourceList as $source) {
+            $sourceReq[] = new SourceChapterRequest\ChapterSource([
+                'source' => $source['source'],
+                'chapterLink' => $source['chapter_link']
+            ]);
+        }
+
+        list($result, $status) = $this->_simpleRequest(
+            '/srv.BookService/GetBookSourceChapterInfo',
+            new SourceChapterRequest(['chapterSource' => $sourceReq]),
+            [SourceChapterResponse::class, 'decode']
+        )->wait();
+        if ($status->code) {
+            throw new Exception($status->details);
+        }
+        $chapterMetas = [];
+        foreach ($result->getChapterInfo() as $chapterInfo) {
+            $chapterCount = array_get($chapterMetas, 'chapter_count', 0);
+            if ($chapterCount < $chapterInfo->getChapterCount()) {
+                $chapterMetas = [
+                    'source' => $chapterInfo->getSource(),
+                    'chapter_link' => $chapterInfo->getChapterLink(),
+                    'chapter_count' => $chapterInfo->getChapterCount(),
+                ];
+            }
+        }
+
+        return $chapterMetas;
+    }
+
+    /**
      * 获取书籍的章节列表
      * @param $bookId
      * @return mixed
@@ -106,7 +192,7 @@ class BookService extends BaseService
     public function getBookChapters($bookId)
     {
         $chapters = Cache::get("chapters:{$bookId}", function () use ($bookId) {
-            $bookSource = $this->getBookSource($bookId);
+            $bookSource = $this->getLastBookSource($bookId);
             list($result, $status) = $this->_simpleRequest(
                 '/srv.ParserService/ParserChapters',
                 new ChapterRequest(['link' => $bookSource['chapter_link'], 'source' => $bookSource['source']]),

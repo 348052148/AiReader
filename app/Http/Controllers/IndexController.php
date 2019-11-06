@@ -14,8 +14,10 @@ class IndexController extends Controller
 
     public function index(BookService $bookService)
     {
-        $bookList = Book::where("title","like","%天启预报%")->get()->toArray();
-        var_dump($bookList);
+        $c = $bookService->getLastBookSource("0000408690b92216f51190461564019e");
+        var_dump($c);
+//        $bookList = Book::where("title","like","%天启预报%")->get()->toArray();
+//        var_dump($bookList);
 //        echo md5("神级大魔头拉姆连载");
 //        $chapters = $bookService->getBookChapters('0202b04d8aebd2afc56c586fcd228b87');
 //        return response()->json($chapters);
