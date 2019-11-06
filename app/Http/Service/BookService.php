@@ -3,11 +3,14 @@
 namespace App\Http\Service;
 
 use App\Book;
+use App\BookSource;
 use App\Chapter;
 use App\Http\Parser\QuanWenParser;
 use Exception;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Srv\ChapterContentRequest;
+use Srv\ChapterContentResponse;
 use Srv\ChapterRequest;
 use Srv\ChapterResponse;
 
@@ -69,6 +72,32 @@ class BookService extends BaseService
         return $chapterCount;
     }
 
+
+    /**
+     * 获取源
+     *
+     * @param $bookId
+     * @return array
+     * @throws Exception
+     */
+    public function getBookSource($bookId)
+    {
+        $bookSource = BookSource::where('book_id', $bookId)->first();
+        $sourceFlag = 'quanwen';
+        if ($bookSource) {
+            $bookSource = $bookSource->toArray();
+            if ($bookSource['source'] == '杂读小说网') {
+                $sourceFlag = 'zadu';
+            } else if ($bookSource['source'] == '新笔趣阁') {
+                $sourceFlag = 'xbiquge';
+            }
+            return ['chapter_link' => $bookSource['chapter_link'], 'source' => $sourceFlag];
+        } else {
+            $book = $this->getBookInfoById($bookId);
+            return ['chapter_link' => $book['chapter_link'], 'source' => $sourceFlag];
+        }
+    }
+
     /**
      * 获取书籍的章节列表
      * @param $bookId
@@ -77,10 +106,10 @@ class BookService extends BaseService
     public function getBookChapters($bookId)
     {
         $chapters = Cache::get("chapters:{$bookId}", function () use ($bookId) {
-            $book = $this->getBookInfoById($bookId);
+            $bookSource = $this->getBookSource($bookId);
             list($result, $status) = $this->_simpleRequest(
                 '/srv.ParserService/ParserChapters',
-                new ChapterRequest(['link' => $book['chapter_link']]),
+                new ChapterRequest(['link' => $bookSource['chapter_link'], 'source' => $bookSource['source']]),
                 [ChapterResponse::class, 'decode']
             )->wait();
             if ($status->code) {
@@ -94,6 +123,7 @@ class BookService extends BaseService
                     'index' => $chapter->getIndex(),
                     'content_link' => $chapter->getContentsLink(),
                     'chapter_id' => "{$bookId}:{$chapter->getIndex()}",
+                    'source' => $chapter->getSource(),
                 ];
             }
             //保存书籍章节信息
@@ -131,8 +161,23 @@ class BookService extends BaseService
         $contents = Cache::get("chapterContents:{$chapterId}", function () use ($chapterId) {
             Log::info("未命中章节{$chapterId}缓存");
             $chapter = $this->getChapterInfoById($chapterId);
-            $contents = QuanWenParser::convertCatelogContents($chapter['content_link']);
+
+            //$contents = QuanWenParser::convertCatelogContents($chapter['content_link']);
+            //解析内容服务
+            list($result, $status) = $this->_simpleRequest(
+                '/srv.ParserService/ParserChapterContents',
+                new ChapterContentRequest(['link' => $chapter['content_link'], 'source' => $chapter['source']]),
+                [ChapterContentResponse::class, 'decode']
+            )->wait();
+
+            if ($status->code) {
+                throw new Exception($status->details);
+            }
+
+            $contents = $result->getContents();
+
             Cache::put("chapterContents:{$chapterId}", $contents, 86400);
+
             return $contents;
         });
 

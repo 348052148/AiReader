@@ -9,11 +9,9 @@ use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
 
 /**
- *标注+类型+属性名+属性顺序号+[默认值]
- *
- * Generated from protobuf message <code>srv.ChapterRequest</code>
+ * Generated from protobuf message <code>srv.ChapterContentRequest</code>
  */
-class ChapterRequest extends \Google\Protobuf\Internal\Message
+class ChapterContentRequest extends \Google\Protobuf\Internal\Message
 {
     /**
      *链接

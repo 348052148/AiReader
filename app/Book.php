@@ -12,5 +12,5 @@ class Book extends Model
 
     protected $fillable = ['book_id'];
 
-    protected $primaryKey = 'book_id';
+//    protected $primaryKey = 'book_id';
 }

@@ -31,6 +31,12 @@ class Chapter extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string contentsLink = 3;</code>
      */
     private $contentsLink = '';
+    /**
+     *源站
+     *
+     * Generated from protobuf field <code>string source = 4;</code>
+     */
+    private $source = '';
 
     /**
      * Constructor.
@@ -44,6 +50,8 @@ class Chapter extends \Google\Protobuf\Internal\Message
      *          章节索引
      *     @type string $contentsLink
      *          内容链接
+     *     @type string $source
+     *          源站
      * }
      */
     public function __construct($data = NULL) {
@@ -125,6 +133,32 @@ class Chapter extends \Google\Protobuf\Internal\Message
     {
         GPBUtil::checkString($var, True);
         $this->contentsLink = $var;
+
+        return $this;
+    }
+
+    /**
+     *源站
+     *
+     * Generated from protobuf field <code>string source = 4;</code>
+     * @return string
+     */
+    public function getSource()
+    {
+        return $this->source;
+    }
+
+    /**
+     *源站
+     *
+     * Generated from protobuf field <code>string source = 4;</code>
+     * @param string $var
+     * @return $this
+     */
+    public function setSource($var)
+    {
+        GPBUtil::checkString($var, True);
+        $this->source = $var;
 
         return $this;
     }
