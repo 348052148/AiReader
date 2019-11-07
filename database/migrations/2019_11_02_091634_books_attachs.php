@@ -14,9 +14,11 @@ class BooksAttachs extends Migration
     public function up()
     {
         Schema::create('w_books_attach', function (Blueprint $table){
-            $table->string('book_id', 128);
-            $table->integer('read_times', 11);
-            $table->integer('look_times', 11);
+            $table->increments("book_attach_id");
+            $table->string('book_id', 128)->default("");
+            $table->integer('read_times');
+            $table->integer('look_times');
+            $table->index('book_id', 'book_id');
         });
     }
 

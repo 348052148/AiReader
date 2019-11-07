@@ -67,6 +67,11 @@ Route::get('/book/{book_id}/image', 'BookController@image');
 //用户信息
 Route::get('/user/{openid}', 'UserController@userInfo');
 
+//用户书架
+Route::get('/user/{user_id}/bookshelf', 'UserController@userBookShelf');
+Route::post('/user/{user_id}/bookshelf', 'UserController@addBookForBookShelf');
+Route::delete('/user/{user_id}/bookshelf', 'UserController@removeBookForBookShelf');
+
 //小程序登陆
 Route::get('/wechat/login/{code}', 'LoginController@login');
 Route::post('/wechat/register', 'LoginController@register');
