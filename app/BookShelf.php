@@ -7,4 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 class BookShelf extends Model
 {
     protected $table = "w_bookshelf";
+    const UPDATED_AT = null;
 }

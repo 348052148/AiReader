@@ -152,34 +152,38 @@ class BookService extends BaseService
      */
     public function getLastBookSource($bookId)
     {
-        $sourceList = $this->getBookSourceList($bookId);
-        $sourceReq = [];
-        foreach ($sourceList as $source) {
-            $sourceReq[] = new SourceChapterRequest\ChapterSource([
-                'source' => $source['source'],
-                'chapterLink' => $source['chapter_link']
-            ]);
-        }
-
-        list($result, $status) = $this->_simpleRequest(
-            '/srv.BookService/GetBookSourceChapterInfo',
-            new SourceChapterRequest(['chapterSource' => $sourceReq]),
-            [SourceChapterResponse::class, 'decode']
-        )->wait();
-        if ($status->code) {
-            throw new Exception($status->details);
-        }
-        $chapterMetas = [];
-        foreach ($result->getChapterInfo() as $chapterInfo) {
-            $chapterCount = array_get($chapterMetas, 'chapter_count', 0);
-            if ($chapterCount < $chapterInfo->getChapterCount()) {
-                $chapterMetas = [
-                    'source' => $chapterInfo->getSource(),
-                    'chapter_link' => $chapterInfo->getChapterLink(),
-                    'chapter_count' => $chapterInfo->getChapterCount(),
-                ];
+        $chapterMetas = Cache::get("bookSourceMeta:{$bookId}", function () use ($bookId) {
+            $sourceList = $this->getBookSourceList($bookId);
+            $sourceReq = [];
+            foreach ($sourceList as $source) {
+                $sourceReq[] = new SourceChapterRequest\ChapterSource([
+                    'source' => $source['source'],
+                    'chapterLink' => $source['chapter_link']
+                ]);
             }
-        }
+
+            list($result, $status) = $this->_simpleRequest(
+                '/srv.BookService/GetBookSourceChapterInfo',
+                new SourceChapterRequest(['chapterSource' => $sourceReq]),
+                [SourceChapterResponse::class, 'decode']
+            )->wait();
+            if ($status->code) {
+                throw new Exception($status->details);
+            }
+            $chapterMetas = [];
+            foreach ($result->getChapterInfo() as $chapterInfo) {
+                $chapterCount = array_get($chapterMetas, 'chapter_count', 0);
+                if ($chapterCount < $chapterInfo->getChapterCount()) {
+                    $chapterMetas = [
+                        'source' => $chapterInfo->getSource(),
+                        'chapter_link' => $chapterInfo->getChapterLink(),
+                        'chapter_count' => $chapterInfo->getChapterCount(),
+                    ];
+                }
+            }
+
+            Cache::put("bookSourceMeta:{$bookId}", $chapterMetas, 86400);
+        });
 
         return $chapterMetas;
     }

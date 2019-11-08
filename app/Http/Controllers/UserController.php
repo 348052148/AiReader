@@ -50,6 +50,22 @@ class UserController extends Controller
     }
 
     /**
+     * @param Request $request
+     * @param BookShelfService $bookShelfService
+     * @param $userId
+     * @param $bookId
+     * @return JsonResponse
+     */
+    public function updateBookForBookShelf(Request $request, BookShelfService $bookShelfService, $userId, $bookId)
+    {
+        $readNum = $request->input('readNum');
+        $readOffset = $request->input('readOffset');
+        $result = $bookShelfService->updateBookFromUserBookShelf($userId, $bookId, $readNum, $readOffset);
+
+        return response()->json($result);
+    }
+
+    /**
      * 添加书籍到书架
      * @param Request $request
      * @param BookShelfService $bookShelfService

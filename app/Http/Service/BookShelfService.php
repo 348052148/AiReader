@@ -2,6 +2,7 @@
 
 namespace App\Http\Service;
 
+use App\Book;
 use App\BookShelf;
 
 class BookShelfService
@@ -14,12 +15,30 @@ class BookShelfService
      */
     public function getBooksByUserBookShelf($userId)
     {
-        $books = BookShelf::where('book_id', $userId)->get();
+        $books = BookShelf::where('user_id', $userId)->get();
         if ($books) {
-            return $books->toArray();
+            $books = $books->toArray();
+        } else {
+            $books = [];
         }
 
-        return [];
+        $readNumMap = array_column($books, 'read_num', 'book_id');
+        $readOffsetMap = array_column($books, 'read_offset', 'book_id');
+        $chapterTitleMap = array_column($books, 'chapter_title', 'book_id');
+        $bookList = Book::whereIn('book_id', array_column($books, 'book_id'))->get();
+
+        if ($bookList) {
+            $bookList = $bookList->toArray();
+        }
+
+        $bookList = array_map(function ($v) use ($readNumMap, $readOffsetMap, $chapterTitleMap){
+            $v['read_num'] = array_get($readNumMap, $v['book_id'], 0);
+            $v['read_offset'] = array_get($readOffsetMap, $v['book_id'], 0);
+            $v['chapter_title'] = array_get($chapterTitleMap, $v['book_id'], 0);
+            return $v;
+        }, $bookList);
+
+        return $bookList;
     }
 
     /**
@@ -35,6 +54,24 @@ class BookShelfService
         return BookShelf::insert([
             'user_id' => $userId,
             'book_id' => $bookId,
+            'read_num' => $readNum,
+            'read_offset' => $readOffset,
+            'is_updated' => 0,
+            'chapter_title' => '未阅读',
+        ]);
+    }
+
+    /**
+     * 更新书架书籍信息
+     * @param $userId
+     * @param $bookId
+     * @param $readNum
+     * @param $readOffset
+     * @return mixed
+     */
+    public function updateBookFromUserBookShelf($userId, $bookId, $readNum, $readOffset)
+    {
+        return BookShelf::where('user_id', $userId)->where('book_id', $bookId)->update([
             'read_num' => $readNum,
             'read_offset' => $readOffset,
         ]);
