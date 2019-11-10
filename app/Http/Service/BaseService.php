@@ -29,7 +29,7 @@ class BaseService extends BaseStub
 
     public function fundService()
     {
-        $client = new EtcdService(config('etcd.host').":".config('etcd.port'));
+        $client = new EtcdService(config('services.etcd.host').":".config('services.etcd.port'));
         $services = $client->getRange(config("services.gorpc.keys"), config("services.gorpc.keys") . "9000");
         $len = count($services);
         $index = random_int(0, $len - 1);
