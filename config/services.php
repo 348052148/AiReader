@@ -35,6 +35,7 @@ return [
         'secret' => env('STRIPE_SECRET'),
     ],
     'gorpc' => [
+        'keys' => env('RPC_KEYS', 'go-service'),
         'domain' => env('RPC_DOMAIN', ''),
         'port'   => env('RPC_PORT', '9001')
     ],

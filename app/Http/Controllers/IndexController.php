@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Book;
+use App\Http\Service\BaseService;
 use App\Http\Service\BookService;
 use App\Jobs\StoreChapterContentsJob;
 use Illuminate\Http\JsonResponse;
@@ -14,8 +15,8 @@ class IndexController extends Controller
 
     public function index(BookService $bookService)
     {
-        $c = $bookService->getLastBookSource("0000408690b92216f51190461564019e");
-        var_dump($c);
+        $c = new BaseService();
+        $c->fundService();
 //        $bookList = Book::where("title","like","%天启预报%")->get()->toArray();
 //        var_dump($bookList);
 //        echo md5("神级大魔头拉姆连载");

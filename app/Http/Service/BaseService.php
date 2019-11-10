@@ -4,6 +4,7 @@ namespace App\Http\Service;
 
 use Grpc\BaseStub;
 use Grpc\ChannelCredentials;
+use Illuminate\Support\Facades\Log;
 
 class BaseService extends BaseStub
 {
@@ -17,6 +18,8 @@ class BaseService extends BaseStub
         $host = config('services.gorpc.domain');
         $port = config('services.gorpc.port');
         $this->hostname = "{$host}:{$port}";
+        $this->hostname = $this->fundService();
+        Log::info("goRpc", [$this->hostname]);
         $this->opts = [
             'credentials' => ChannelCredentials::createInsecure()
         ];
@@ -24,7 +27,17 @@ class BaseService extends BaseStub
         parent::__construct($this->hostname, $this->opts, $this->channel);
     }
 
-    protected function callService($method, $params, $metadata = [], $options=[])
+    public function fundService()
+    {
+        $client = new EtcdService("127.0.0.1:2379");
+        $services = $client->getRange(config("services.gorpc.keys"), config("services.gorpc.keys") . "9000");
+        $len = count($services);
+        $index = random_int(0, $len - 1);
+
+        return $services[$index];
+    }
+
+    protected function callService($method, $params, $metadata = [], $options = [])
     {
         $this->_simpleRequest($method, $params, ['\Xuexitest\TestReply', 'decode'],
             $metadata, $options);
