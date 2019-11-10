@@ -183,6 +183,8 @@ class BookService extends BaseService
             }
 
             Cache::put("bookSourceMeta:{$bookId}", $chapterMetas, 86400);
+
+            return $chapterMetas;
         });
 
         return $chapterMetas;
