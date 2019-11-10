@@ -39,5 +39,9 @@ return [
         'domain' => env('RPC_DOMAIN', ''),
         'port'   => env('RPC_PORT', '9001')
     ],
+    'etcd' => [
+        'host' => env('ETCD_HOST', 'localhost'),
+        'port' => env('ETCD_PORT', '2379')
+    ]
 
 ];
