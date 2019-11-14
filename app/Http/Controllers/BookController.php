@@ -55,7 +55,6 @@ class BookController extends Controller
      */
 
 
-
     /**
      * @SWG\Get(
      *      path="/book/{book_id}",
@@ -165,7 +164,7 @@ class BookController extends Controller
             $bookService->getChapterContents($chapter['chapter_id']));
         event(new StoreChapterContents($chapter['chapter_id']));
 
-        return response()->json(['title'=> $chapter['title'], 'contents' => $contents]);
+        return response()->json(['title' => $chapter['title'], 'contents' => $contents]);
     }
 
     /**
@@ -177,6 +176,6 @@ class BookController extends Controller
     {
         return response()->stream(function () use ($imageService, $bookId) {
             echo $imageService->getBookCoverImage($bookId);
-        }, 200, ['Content-Type' => 'image/jpeg', 'Cache-Control' => 'public']);
+        }, 200, ['Content-Type' => 'image/jpeg', 'Cache-Control' => 'max-age=315360000']);
     }
 }
