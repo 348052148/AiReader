@@ -21,6 +21,9 @@ class ImageService
      */
     public function getBookCoverImage($bookId)
     {
+        if (empty($bookId)) {
+            $bookId = "000000000000";
+        }
         $fileName = storage_path("img") . DIRECTORY_SEPARATOR . "{$bookId}.jpeg";
         if (file_exists($fileName)) {
             $contents = file_get_contents($fileName);
@@ -31,7 +34,7 @@ class ImageService
                 if (!$contents) {
                     throw new Exception('Not Fund');
                 }
-            }catch (Exception $exception) {
+            } catch (Exception $exception) {
                 //默认书籍
                 $contents = file_get_contents('http://www.quanshuwang.com/modules/article/images/nocover.jpg');
             } finally {
