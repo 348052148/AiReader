@@ -177,6 +177,6 @@ class BookController extends Controller
     {
         return response()->stream(function () use ($imageService, $bookId) {
             echo $imageService->getBookCoverImage($bookId);
-        }, 200, ['Content-Type' => 'image/jpeg']);
+        }, 200, ['Content-Type' => 'image/jpeg', 'Cache-Control' => 'public']);
     }
 }
