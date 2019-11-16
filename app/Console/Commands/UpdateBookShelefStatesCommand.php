@@ -44,7 +44,7 @@ class UpdateBookShelefStatesCommand extends Command
     {
         $books = BookShelf::All()->toArray();
         foreach ($books as $book) {
-            $bookService->getLastBookSource($book['book_id']);
+            $bookService->flushBookChapterCount($book['book_id']);
             $this->info($book['book_id']." 更新状态成功");
         }
         Log::info("命令：书籍更新状态刷新");

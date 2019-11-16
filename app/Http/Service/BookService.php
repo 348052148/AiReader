@@ -188,6 +188,18 @@ class BookService extends BaseService
             return $chapterMetas;
         });
 
+        return $chapterMetas;
+    }
+
+    /**
+     * 更新书籍章节状态信息
+     * @param $bookId
+     * @return bool
+     * @throws Exception
+     */
+    public function flushBookChapterCount($bookId)
+    {
+        $chapterMetas = $this->getLastBookSource($bookId);
         //处理书籍更新逻辑
         $book = Book::where('book_id', $bookId)->first();
         if (!$book) {
@@ -201,8 +213,7 @@ class BookService extends BaseService
             //通知书架更新
             event(new BookShelfUpdated($book['book_id'], 1));
         }
-
-        return $chapterMetas;
+        return true;
     }
 
     /**
@@ -354,16 +365,4 @@ class BookService extends BaseService
         }
     }
 
-    /**
-     * 更新书籍章节数
-     * @param $bookId
-     * @param $chapterCount
-     * @return mixed
-     */
-    public function updateBookChapterCount($bookId, $chapterCount)
-    {
-        return Book::where('book_id', $bookId)->update([
-            'chapter_count' => $chapterCount
-        ]);
-    }
 }
