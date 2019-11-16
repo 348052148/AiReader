@@ -4,9 +4,60 @@ namespace App\Http\Service;
 
 use App\Book;
 use App\BookShelf;
+use Illuminate\Support\Facades\Log;
 
 class BookShelfService
 {
+
+    /**
+     * 获取书籍状态
+     * @param $userId
+     * @return array
+     */
+    public function getBooksStateByUserBookShelf($userId)
+    {
+        $books = BookShelf::where('user_id', $userId)->get();
+        if ($books) {
+            $books = $books->toArray();
+        } else {
+            $books = [];
+        }
+        $booksState = [];
+        foreach ($books as $book) {
+            $booksState[$book['book_id']] = $book['is_updated'];
+        }
+
+        return $booksState;
+    }
+
+    /**
+     * 更新所有书架书籍的状态
+     * @param $bookId
+     * @param int $state
+     * @return mixed
+     */
+    public function updateBookStateByAllUser($bookId, $state = 1)
+    {
+        Log::info("书籍更新", [$bookId]);
+        return BookShelf::where('book_id', $bookId)->update([
+            'is_updated' => $state
+        ]);
+    }
+
+    /**
+     * 更新指定用户书籍书籍状态
+     * @param $userId
+     * @param $bookId
+     * @param int $state
+     * @return mixed
+     */
+    public function updateBookStateByUser($userId, $bookId, $state = 0)
+    {
+        Log::info("更改书籍状态", [$bookId]);
+        return BookShelf::where('user_id', $userId)->where('book_id', $bookId)->update([
+            'is_updated' => $state
+        ]);
+    }
 
     /**
      * 获取用户书籍书籍列表
@@ -31,7 +82,7 @@ class BookShelfService
             $bookList = $bookList->toArray();
         }
 
-        $bookList = array_map(function ($v) use ($readNumMap, $readOffsetMap, $chapterTitleMap){
+        $bookList = array_map(function ($v) use ($readNumMap, $readOffsetMap, $chapterTitleMap) {
             $v['read_num'] = array_get($readNumMap, $v['book_id'], 0);
             $v['read_offset'] = array_get($readOffsetMap, $v['book_id'], 0);
             $v['chapter_title'] = array_get($chapterTitleMap, $v['book_id'], 0);

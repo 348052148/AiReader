@@ -66,6 +66,19 @@ class UserController extends Controller
     }
 
     /**
+     * 获取书籍状态
+     * @param BookShelfService $bookShelfService
+     * @param $userId
+     * @return JsonResponse
+     */
+    public function getBookStateForBookShelf(BookShelfService $bookShelfService, $userId)
+    {
+        $booksState = $bookShelfService->getBooksStateByUserBookShelf($userId);
+
+        return response()->json($booksState);
+    }
+
+    /**
      * 添加书籍到书架
      * @param Request $request
      * @param BookShelfService $bookShelfService

@@ -18,7 +18,16 @@ class EventServiceProvider extends ServiceProvider
         ],
         'App\Events\StoreBookContents' => [
             'App\Listeners\StoreBookContentsListener'
-        ]
+        ],
+        'App\Events\UpdateBookChapterCount' => [
+            'App\Listeners\UpdateBookChapterListener'
+        ],
+        'App\Events\BookShelfUpdated' => [
+            'App\Listeners\BookShelfUpdatedListener'
+        ],
+        'App\Events\BookAlreadyReaded' => [
+            'App\Listeners\BookAlreadyReadedListener'
+        ],
     ];
 
     /**

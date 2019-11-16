@@ -4,6 +4,7 @@ namespace App\Http\Service;
 
 use App\Book;
 use App\BookSource;
+use App\Events\BookShelfUpdated;
 use Exception;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -186,6 +187,20 @@ class BookService extends BaseService
 
             return $chapterMetas;
         });
+
+        //处理书籍更新逻辑
+        $book = Book::where('book_id', $bookId)->first();
+        if (!$book) {
+            throw new Exception("书籍不存在");
+        }
+        if ($book['chapter_count'] < $chapterMetas['chapter_count']) {
+            Book::where('book_id', $bookId)->update([
+                'chapter_count' => $chapterMetas['chapter_count'],
+            ]);
+            Log::info("书架更新", [$book['book_id'], 1]);
+            //通知书架更新
+            event(new BookShelfUpdated($book['book_id'], 1));
+        }
 
         return $chapterMetas;
     }

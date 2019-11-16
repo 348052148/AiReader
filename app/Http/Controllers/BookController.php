@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\BookAlreadyReaded;
 use App\Events\StoreBookContents;
 use App\Events\StoreChapterContents;
 use App\Http\Service\BookService;
@@ -157,12 +158,19 @@ class BookController extends Controller
      * @return JsonResponse
      * @throws Exception
      */
-    public function chapterContentsByIndex(BookService $bookService, TextHandleService $textHandleService, $bookId, $index)
+    public function chapterContentsByIndex(Request $request, BookService $bookService, TextHandleService $textHandleService, $bookId, $index)
     {
         $chapter = $bookService->getBookChapterByIndex($bookId, $index);
         $contents = $textHandleService->ParserText(
             $bookService->getChapterContents($chapter['chapter_id']));
         event(new StoreChapterContents($chapter['chapter_id']));
+
+        //如果是否正常阅读过，阅读过则改变书架书籍更新状态
+        $isRead = $request->input("is_read", false);
+        $userId = $request->input("user_id", "");
+        if ($isRead) {
+            event(new BookAlreadyReaded($userId, $bookId));
+        }
 
         return response()->json(['title' => $chapter['title'], 'contents' => $contents]);
     }
