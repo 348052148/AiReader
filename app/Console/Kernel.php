@@ -24,9 +24,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
-        $schedule->command('update:bookshelfState')->everyMinute();
+        // 每小时更新
+        $schedule->command('update:bookshelfState')->hourly();
     }
 
     /**
