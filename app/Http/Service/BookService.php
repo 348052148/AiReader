@@ -14,10 +14,9 @@ use Srv\ChapterContentResponse;
 use Srv\ChapterRequest;
 use Srv\ChapterResponse;
 use Srv\SourceChapterRequest;
-use Srv\SourceChapterRequest_ChapterSource;
 use Srv\SourceChapterResponse;
 
-class BookService extends BaseService
+class BookService
 {
 
     /**
@@ -173,7 +172,7 @@ class BookService extends BaseService
                 ]);
             }
 
-            list($result, $status) = $this->_simpleRequest(
+            list($result, $status) = GrpcService::simpleRequest(
                 '/srv.BookService/GetBookSourceChapterInfo',
                 new SourceChapterRequest(['chapterSource' => $sourceReq]),
                 [SourceChapterResponse::class, 'decode']
@@ -235,7 +234,7 @@ class BookService extends BaseService
     {
         $chapters = Cache::get("chapters:{$bookId}", function () use ($bookId) {
             $bookSource = $this->getLastBookSource($bookId);
-            list($result, $status) = $this->_simpleRequest(
+            list($result, $status) = GrpcService::simpleRequest(
                 '/srv.ParserService/ParserChapters',
                 new ChapterRequest(['link' => $bookSource['chapter_link'], 'source' => $bookSource['source']]),
                 [ChapterResponse::class, 'decode']
@@ -342,7 +341,7 @@ class BookService extends BaseService
 
         //$contents = QuanWenParser::convertCatelogContents($chapter['content_link']);
         //解析内容服务
-        list($result, $status) = $this->_simpleRequest(
+        list($result, $status) =GrpcService::simpleRequest(
             '/srv.ParserService/ParserChapterContents',
             new ChapterContentRequest(['link' => $chapter['content_link'], 'source' => $chapter['source']]),
             [ChapterContentResponse::class, 'decode']

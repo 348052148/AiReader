@@ -6,7 +6,7 @@ use Grpc\BaseStub;
 use Grpc\ChannelCredentials;
 use Illuminate\Support\Facades\Log;
 
-class BaseService extends BaseStub
+class GrpcService extends BaseStub
 {
 
     protected $hostname;
@@ -27,9 +27,18 @@ class BaseService extends BaseStub
         parent::__construct($this->hostname, $this->opts, $this->channel);
     }
 
+    private static $staticInstance = null;
+    public static function getInstance()
+    {
+        if (self::$staticInstance == null) {
+            self::$staticInstance =  new self();
+        }
+        return self::$staticInstance;
+    }
+
     public function fundService()
     {
-        $client = new EtcdService(config('services.etcd.host').":".config('services.etcd.port'));
+        $client = new EtcdService(config('services.etcd.host') . ":" . config('services.etcd.port'));
         $services = $client->getRange(config("services.gorpc.keys"), config("services.gorpc.keys") . "9000");
         $len = count($services);
         $index = random_int(0, $len - 1);
@@ -37,10 +46,9 @@ class BaseService extends BaseStub
         return $services[$index];
     }
 
-    protected function callService($method, $params, $metadata = [], $options = [])
+    public static function simpleRequest($method, $argument, $deserialize, array $metadata = [], array $options = [])
     {
-        $this->_simpleRequest($method, $params, ['\Xuexitest\TestReply', 'decode'],
-            $metadata, $options);
+        return self::getInstance()->_simpleRequest($method, $argument, $deserialize, $metadata, $options);
     }
 
 }
