@@ -79,7 +79,6 @@ class BookController extends Controller
     public function bookDetail(Request $request, BookService $bookService, $bookId)
     {
         $book = $bookService->getBookInfoById($bookId);
-        $book['chapter_count'] = $bookService->getBookChapterCount($bookId);
         event(new StoreBookContents($bookId));
 
         return response()->json($book);
