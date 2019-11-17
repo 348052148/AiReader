@@ -71,10 +71,15 @@ class BookService extends BaseService
      */
     public function getBookChapterCount($bookId)
     {
-        $chapters = $this->getBookChapters($bookId);
-        $chapterCount = collect($chapters)->count();
-        //更新书籍章节数
-        event(new FlushBookChapterCount($bookId));
+        try {
+            $chapters = $this->getBookChapters($bookId);
+            $chapterCount = collect($chapters)->count();
+            //更新书籍章节数
+            event(new FlushBookChapterCount($bookId));
+
+        } catch (Exception $e) {
+            $chapterCount = 0;
+        }
 
         return $chapterCount;
     }

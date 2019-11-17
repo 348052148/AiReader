@@ -107,7 +107,7 @@ class BookShelfService
             'book_id' => $bookId,
             'read_num' => $readNum,
             'read_offset' => $readOffset,
-            'is_updated' => 0,
+            'is_updated' => 1,
             'chapter_title' => '未阅读',
         ]);
     }
