@@ -5,6 +5,7 @@ namespace App\Http\Service;
 use App\Book;
 use App\BookSource;
 use App\Events\BookShelfUpdated;
+use App\Events\FlushBookChapterCount;
 use Exception;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -60,13 +61,7 @@ class BookService extends BaseService
             throw new Exception('不存在此书籍');
         }
 
-        $book = $book->toArray();
-        //如果没有
-        if (empty($book['chapter_count'])) {
-            $book['chapter_count'] = $this->getBookChapterCount($bookId);
-        }
-
-        return $book;
+        return $book->toArray();
     }
 
     /**
@@ -79,9 +74,7 @@ class BookService extends BaseService
         $chapters = $this->getBookChapters($bookId);
         $chapterCount = collect($chapters)->count();
         //更新书籍章节数
-        Book::where('book_id', $bookId)->update([
-            'chapter_count' => $chapterCount,
-        ]);
+        event(new FlushBookChapterCount($bookId));
 
         return $chapterCount;
     }

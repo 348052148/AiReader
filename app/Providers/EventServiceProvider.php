@@ -28,6 +28,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\BookAlreadyReaded' => [
             'App\Listeners\BookAlreadyReadedListener'
         ],
+        'App\Events\FlushBookChapterCount' => [
+            'App\Listeners\FlushBookChapterCountListener'
+        ],
     ];
 
     /**
