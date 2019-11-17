@@ -304,6 +304,9 @@ class BookService
      */
     public function getBookChapterByIndex($bookId, $index)
     {
+        if ($index < 0) {
+            $index = 0;
+        }
         $chapters = $this->getBookChapters($bookId);
         $chapter = collect($chapters)->where('index', $index)->first();
         if (!$chapter) {
@@ -341,7 +344,7 @@ class BookService
 
         //$contents = QuanWenParser::convertCatelogContents($chapter['content_link']);
         //解析内容服务
-        list($result, $status) =GrpcService::simpleRequest(
+        list($result, $status) = GrpcService::simpleRequest(
             '/srv.ParserService/ParserChapterContents',
             new ChapterContentRequest(['link' => $chapter['content_link'], 'source' => $chapter['source']]),
             [ChapterContentResponse::class, 'decode']
