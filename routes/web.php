@@ -36,3 +36,7 @@ Route::prefix("admin")->namespace('Admin')->group(function () {
 
 //书籍图片
 Route::get('/book/image/{book_id}.jpeg', 'BookController@image');
+
+Route::prefix('reader')->namespace('Reader')->middleware('allow')->group(function (){
+    Route::get('/books', 'BookController@books');
+});

@@ -7,6 +7,7 @@ use App\BookSource;
 use App\Events\BookShelfUpdated;
 use App\Events\FlushBookChapterCount;
 use Exception;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Srv\ChapterContentRequest;
@@ -25,12 +26,7 @@ class BookService
      */
     public function getHotBooks()
     {
-        $books = Book::limit(6)->get();
-        if (!$books) {
-            return [];
-        }
-
-        return $books->toArray();
+        return SmXiaoShuoService::hotBooks();
     }
 
     /**
@@ -39,12 +35,7 @@ class BookService
      */
     public function getRecommendBooks()
     {
-        $books = Book::offset(10)->limit(6)->get();
-        if (!$books) {
-            return [];
-        }
-
-        return $books->toArray();
+        return SmXiaoShuoService::soarBooks();
     }
 
     /**

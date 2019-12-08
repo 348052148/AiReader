@@ -1,8 +1,11 @@
 <?php
+
 namespace App\Http\Service;
+
 use App\Book;
 
-class SearchService {
+class SearchService
+{
 
     /**
      * 搜索书籍服务
@@ -13,9 +16,9 @@ class SearchService {
     public function search($keyword, $page = 1)
     {
         if (is_null($keyword)) {
-            $bookList = Book::offset(($page-1) * 20)->limit(20)->get()->toArray();
+            $bookList = Book::offset(($page - 1) * 20)->limit(20)->get()->toArray();
         } else {
-            $bookList = Book::where("title","like","%{$keyword}%")->offset(($page-1) * 20)->limit(20)->get()->toArray();
+            $bookList = Book::where("title", "like", "%{$keyword}%")->offset(($page - 1) * 20)->limit(20)->get()->toArray();
         }
 
         return $bookList;
@@ -29,7 +32,11 @@ class SearchService {
      */
     public function searchByAttr($attr, $page)
     {
-        $bookList = Book::offset(($page-1) * 20)->limit(20)->get()->toArray();
+        if ($attr == 'all') {
+            $bookList = Book::offset(($page - 1) * 20)->limit(20)->get()->toArray();
+        } else {
+            $bookList = SmXiaoShuoService::getSMXiaoShuoBooks($attr, $page);
+        }
 
         return $bookList;
     }

@@ -21,6 +21,13 @@ class ClassifyController extends Controller
         return response()->json($classifyList);
     }
 
+    public function classifyMenus(Request $request, ClassifyService $classifyService)
+    {
+        $classifyMenus = $classifyService->getClassifyMenus();
+
+        return response()->json($classifyMenus);
+    }
+
     /**
      * 获取分类下书籍列表
      * @param Request $request

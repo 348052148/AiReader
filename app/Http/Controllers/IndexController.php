@@ -6,8 +6,10 @@ use App\Book;
 use App\Http\Service\BaseService;
 use App\Http\Service\BookService;
 use App\Jobs\StoreChapterContentsJob;
+use GuzzleHttp\Client;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use function GuzzleHttp\Psr7\parse_query;
 
 class IndexController extends Controller
 {
@@ -15,8 +17,29 @@ class IndexController extends Controller
 
     public function index(BookService $bookService)
     {
-        $c = new BaseService();
-        $c->fundService();
+        $req = parse_url(config('services.sm.bao_url'));
+        var_dump(parse_query($req['query']));
+//        $client = new Client();
+//        $response = $client->get('https://api.xiaoshuo1-sm.com/sc/1/channel/channel/?format=json&page=3&size=20&q=%E7%83%AD%E6%90%9C&_t=1575719226479&_=1575719226480&callback=jsonp3');
+//        $result = $response->getBody()->getContents();
+//
+//        foreach ($result['list'] as $book){
+//            [
+//                'id' => md5($book['title'].$book['author']),
+//                'title' => $book['title'],
+//                'cover' => $book['icon'],
+//                'author' => $book['author'],
+//                'desc' => $book['description']
+//            ];
+//        }
+//        $client = new \Baidu\AipOcr('17842200', 'ucBAdlp7GKr65iKl6HcnAfyT', 'kI88KrdAIyLexQlvE9kp9VG2EFMHGLOx');
+//        $image = file_get_contents(storage_path('代码.png'));
+
+// 调用通用文字识别, 图片参数为本地图片
+//        $res=$client->basicGeneral($image);
+//        var_dump($res);
+//        $c = new BaseService();
+//        $c->fundService();
 //        $bookList = Book::where("title","like","%天启预报%")->get()->toArray();
 //        var_dump($bookList);
 //        echo md5("神级大魔头拉姆连载");

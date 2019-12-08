@@ -43,6 +43,9 @@ Route::get('/book/all', 'IndexController@index');
 //获取分类列表
 Route::get('/classifys', 'ClassifyController@classifyList');
 
+//分类菜单
+Route::get('/classify/menus', 'ClassifyController@classifyMenus');
+
 //获取分类下书籍
 Route::get('/classifys/books', 'ClassifyController@classifyBooks');
 
