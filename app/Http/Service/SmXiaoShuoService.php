@@ -88,7 +88,7 @@ class SmXiaoShuoService
                 'title' => $book['title'],
                 'cover' => $book['icon'],
                 'author' => $book['author'],
-                'desc' => $book['description']
+                'detail' => $book['description']
             ];
         }
         return $books;
