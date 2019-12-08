@@ -88,11 +88,7 @@ class BookService
         $sourceFlag = 'quanwen';
         if ($bookSource) {
             $bookSource = $bookSource->toArray();
-            if ($bookSource['source'] == '杂读小说网') {
-                $sourceFlag = 'zadu';
-            } else if ($bookSource['source'] == '新笔趣阁') {
-                $sourceFlag = 'xbiquge';
-            }
+            $sourceFlag = $this->getSourceFlag($bookSource['source']);
             return ['chapter_link' => $bookSource['chapter_link'], 'source' => $sourceFlag];
         } else {
             $book = $this->getBookInfoById($bookId);
@@ -141,7 +137,11 @@ class BookService
             return 'xbiquge';
         } elseif ($source == '杂读小说网') {
             return 'zadu';
+        }else if ($source == '17k') {
+            return '17k';
         }
+
+        return 'quanwen';
     }
 
     /**
