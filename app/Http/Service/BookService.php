@@ -26,7 +26,7 @@ class BookService
      */
     public function getHotBooks()
     {
-        return SmXiaoShuoService::hotBooks();
+        return collect(SmXiaoShuoService::hotBooks())->splice(0, 9);
     }
 
     /**
@@ -35,7 +35,7 @@ class BookService
      */
     public function getRecommendBooks()
     {
-        return SmXiaoShuoService::soarBooks();
+        return collect(SmXiaoShuoService::soarBooks())->splice(0, 9);
     }
 
     /**
