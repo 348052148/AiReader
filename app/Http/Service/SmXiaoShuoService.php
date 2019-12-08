@@ -15,7 +15,7 @@ class SmXiaoShuoService
 
     public static function hotBooks($page = 1)
     {
-        return self::parseContents(config('services.sm.soar_url'));
+        return self::parseContents(config('services.sm.hot_url'));
     }
 
     public static function ManXuanhuanBooks($page = 1)
