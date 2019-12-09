@@ -13,6 +13,27 @@ class ImageService
         $this->bookService = $bookService;
     }
 
+
+    public function downloadImage($url, $fileName)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // 信任任何证书
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+        $fileData = curl_exec($ch);
+        curl_close($ch);
+
+        $this->saveAsImage($fileData, $fileName);
+    }
+
+    private function saveAsImage($fileData, $fileName)
+    {
+        $resource = fopen($fileName, 'a');
+        fwrite($resource, $fileData);
+        fclose($resource);
+    }
+
     /**
      *获取书籍封面图片
      * @param $bookId
@@ -25,22 +46,17 @@ class ImageService
             $bookId = "000000000000";
         }
         $fileName = storage_path("img") . DIRECTORY_SEPARATOR . "{$bookId}.jpeg";
-        if (file_exists($fileName)) {
-            $contents = file_get_contents($fileName);
-        } else {
+        if (!file_exists($fileName)) {
             try {
                 $book = $this->bookService->getBookInfoById($bookId);
-                $contents = file_get_contents($book['cover']);
-                if (!$contents) {
-                    throw new Exception('Not Fund');
-                }
+                $this->downloadImage($book['cover'], $fileName);
             } catch (Exception $exception) {
                 //默认书籍
-                $contents = file_get_contents('http://www.quanshuwang.com/modules/article/images/nocover.jpg');
-            } finally {
-                file_put_contents($fileName, $contents);
+                $fileName = 'http://www.quanshuwang.com/modules/article/images/nocover.jpg';
             }
         }
+        //默认图片
+        $contents = file_get_contents($fileName);
 
         return $contents;
     }
