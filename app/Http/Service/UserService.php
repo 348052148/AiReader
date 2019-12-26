@@ -32,4 +32,18 @@ class UserService {
 
         return $user->toArray();
     }
+
+    /**
+     * 通过手机查找用户
+     * @param $phone
+     * @return array
+     */
+    public function fundUserByPhone($phone)
+    {
+        $user = User::where('phone', $phone)->first();
+        if (!$user) {
+            return $user;
+        }
+        return $user->toArray();
+    }
 }

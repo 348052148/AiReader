@@ -17,8 +17,9 @@ class IndexController extends Controller
 
     public function index(BookService $bookService)
     {
-        $req = parse_url(config('services.sm.bao_url'));
-        var_dump(parse_query($req['query']));
+        var_dump($_POST);
+//        $req = parse_url(config('services.sm.bao_url'));
+//        var_dump(parse_query($req['query']));
 //        $client = new Client();
 //        $response = $client->get('https://api.xiaoshuo1-sm.com/sc/1/channel/channel/?format=json&page=3&size=20&q=%E7%83%AD%E6%90%9C&_t=1575719226479&_=1575719226480&callback=jsonp3');
 //        $result = $response->getBody()->getContents();

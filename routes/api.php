@@ -17,7 +17,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/', 'IndexController@index');
+Route::any('/', 'IndexController@index');
 
 //搜索结果
 Route::get('/search', 'SearchController@searchBooks');
@@ -79,6 +79,12 @@ Route::put('/user/{user_id}/bookshelf/{book_id}', 'UserController@updateBookForB
 Route::get('/user/{user_id}/bookshelf/state', 'UserController@getBookStateForBookShelf');
 
 //小程序登陆
-Route::get('/wechat/login/{code}', 'LoginController@login');
-Route::post('/wechat/register', 'LoginController@register');
+Route::get('/wechat/login/{code}', 'LoginController@loginByWeChat');
+Route::post('/wechat/register', 'LoginController@registerByWeChat');
+
+//账户登陆
+Route::get('/user/{account}/token', 'LoginController@register');
+Route::post('/user/{account}/token', 'LoginController@login');
+//手机验证码登陆
+Route::post('/user/{phone}/login', 'LoginController@loginByPhoneValidCode');
 

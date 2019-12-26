@@ -35,7 +35,7 @@ class LoginController extends Controller
      *   )
      * )
      */
-    public function login(WeChatService $weChatService, UserService $userService, $code)
+    public function loginByWeChat(WeChatService $weChatService, UserService $userService, $code)
     {
         $weInfo = $weChatService->getOpenid($code);
         $userInfo = $userService->fundUserByOpenId($weInfo['openid']);
@@ -51,12 +51,12 @@ class LoginController extends Controller
     }
 
     /**
-     * 注册信息
+     * 微信注册信息
      * @param Request $request
      * @param UserService $userService
      * @return \Illuminate\Http\JsonResponse
      */
-    public function register(Request $request, UserService $userService)
+    public function registerByWeChat(Request $request, UserService $userService)
     {
         $userInfo = $request->input('data');
 
@@ -69,6 +69,7 @@ class LoginController extends Controller
             'language' => $userInfo['language'],
             'nick_name' => $userInfo['nickName'],
             'province' => $userInfo['province'],
+            'phone' => '',
         ];
         $result = $userService->addUser($userData);
 
@@ -81,5 +82,93 @@ class LoginController extends Controller
         return response()->json($userData);
     }
 
+    /**
+     * 账户密码登陆
+     * @param Request $request
+     * @param UserService $userService
+     * @param string $account
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function login(Request $request, UserService $userService, string $account)
+    {
+        $code = $request->input('code');
+        $password = $request->input('password');
+        $user = $userService->fundUserByPhone($account);
+        if (!$user) {
+            return response()->json(['msg' => 'user not fund'], 404);
+        }
+        if ($password != $user['password']) {
+            return response()->json(['msg' => 'password error or account error'], 400);
+        }
+
+        return response()->json($user);
+    }
+
+    /**
+     * 账户密码注册
+     * @param Request $request
+     * @param UserService $userService
+     * @param string $account
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function register(Request $request, UserService $userService, string $account)
+    {
+        $password = $request->input('password');
+        $code = $request->input('code');
+        $userData = [
+            'openid' => '',
+            'city' => '',
+            'avatar_url' => '',
+            'country' => '',
+            'gender' => '',
+            'language' => '',
+            'nick_name' => '',
+            'province' => '',
+            'phone' => $account,
+            'password' => md5($password)
+        ];
+        $result = $userService->addUser($userData);
+        if (!$result) {
+            return response()->json([
+                'msg' => 'insert fail',
+            ], 500);
+        }
+        return response()->json($userData);
+    }
+
+    /**
+     * 手机号验证码登陆
+     * @param Request $request
+     * @param UserService $userService
+     * @param string $phone
+     * @param int $code
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function loginByPhoneValidCode(Request $request, UserService $userService, string $phone)
+    {
+        $code = $request->input('code');
+        $user = $userService->fundUserByOpenId($phone);
+        if (!$user) {
+            $userData = [
+                'openid' => '',
+                'city' => '',
+                'avatar_url' => '',
+                'country' => '',
+                'gender' => '',
+                'language' => '',
+                'nick_name' => '',
+                'province' => '',
+                'phone' => $phone,
+            ];
+            $result = $userService->addUser($userData);
+            if (!$result) {
+                return response()->json([
+                    'msg' => 'insert fail',
+                ], 500);
+            }
+            return response()->json($userData);
+        }
+        return response()->json($user);
+    }
 
 }
