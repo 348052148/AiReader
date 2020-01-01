@@ -161,12 +161,13 @@ class LoginController extends Controller
                 'phone' => $phoneNumber,
                 'nick_name' => '用户' . rand(pow(10, (6 - 1)), pow(10, 6) - 1)
             ];
-            $result = $userService->addUser($userData);
-            if (!$result) {
+            $userId = $userService->addUser($userData);
+            if (!$userId) {
                 return response()->json([
                     'msg' => 'insert fail',
                 ], 500);
             }
+            $userData['user_id'] = $userId;
             return response()->json($userData);
         }
         return response()->json($user);

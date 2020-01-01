@@ -15,7 +15,7 @@ class UserService {
      */
     public function addUser($userInfo)
     {
-        return User::insert($userInfo);
+        return User::insertGetId($userInfo,'user_id');
     }
 
     /**
