@@ -73,13 +73,14 @@ class LoginController extends Controller
             'province' => $userInfo['province'],
             'phone' => '',
         ];
-        $result = $userService->addUser($userData);
+        $userId = $userService->addUser($userData);
 
-        if (!$result) {
+        if (!$userId) {
             return response()->json([
                 'msg' => 'insert fail',
             ], 500);
         }
+        $userData['user_id'] = $userId;
 
         return response()->json($userData);
     }
@@ -130,10 +131,11 @@ class LoginController extends Controller
             'phone' => $phoneNumber,
             'password' => md5($password)
         ];
-        $result = $userService->addUser($userData);
-        if (!$result) {
+        $userId = $userService->addUser($userData);
+        if (!$userId) {
             throw new \Exception('注册失败');
         }
+        $userData['user_id'] = $userId;
         return response()->json($userData);
     }
 
