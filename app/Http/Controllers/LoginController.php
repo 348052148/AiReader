@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 
+use App\Events\SendSMSValidCode;
 use App\Http\Service\UserService;
 use App\Http\Service\WeChatService;
-use App\User;
-use GuzzleHttp\Client;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class LoginController extends Controller
 {
@@ -88,17 +90,17 @@ class LoginController extends Controller
      * @param UserService $userService
      * @param string $account
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
     public function login(Request $request, UserService $userService, string $account)
     {
-        $code = $request->input('code');
         $password = $request->input('password');
         $user = $userService->fundUserByPhone($account);
         if (!$user) {
-            return response()->json(['msg' => 'user not fund'], 404);
+            throw new \Exception('用户不存在', 404);
         }
-        if ($password != $user['password']) {
-            return response()->json(['msg' => 'password error or account error'], 400);
+        if (md5($password) != $user['password']) {
+            throw new \Exception('密码错误', 400);
         }
 
         return response()->json($user);
@@ -108,30 +110,29 @@ class LoginController extends Controller
      * 账户密码注册
      * @param Request $request
      * @param UserService $userService
-     * @param string $account
+     * @param string $phoneNumber
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
-    public function register(Request $request, UserService $userService, string $account)
+    public function register(Request $request, UserService $userService, string $phoneNumber)
     {
         $password = $request->input('password');
         $code = $request->input('code');
+
+        if (!Cache::has($phoneNumber)) {
+            throw new \Exception('验证码错误');
+        } elseif (Cache::get($phoneNumber) != $code) {
+            throw new \Exception('验证码错误');
+        }
+
         $userData = [
-            'openid' => '',
-            'city' => '',
-            'avatar_url' => '',
-            'country' => '',
-            'gender' => '',
-            'language' => '',
-            'nick_name' => '',
-            'province' => '',
-            'phone' => $account,
+            'nick_name' => '用户' . rand(pow(10, (6 - 1)), pow(10, 6) - 1),
+            'phone' => $phoneNumber,
             'password' => md5($password)
         ];
         $result = $userService->addUser($userData);
         if (!$result) {
-            return response()->json([
-                'msg' => 'insert fail',
-            ], 500);
+            throw new \Exception('注册失败');
         }
         return response()->json($userData);
     }
@@ -140,25 +141,25 @@ class LoginController extends Controller
      * 手机号验证码登陆
      * @param Request $request
      * @param UserService $userService
-     * @param string $phone
-     * @param int $code
+     * @param string $phoneNumber
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
-    public function loginByPhoneValidCode(Request $request, UserService $userService, string $phone)
+    public function loginByPhoneNumberValidCode(Request $request, UserService $userService, string $phoneNumber)
     {
         $code = $request->input('code');
-        $user = $userService->fundUserByOpenId($phone);
+
+        if (!Cache::has($phoneNumber)) {
+            throw new \Exception('验证码错误');
+        } elseif (Cache::get($phoneNumber) != $code) {
+            throw new \Exception('验证码错误');
+        }
+
+        $user = $userService->fundUserByOpenId($phoneNumber);
         if (!$user) {
             $userData = [
-                'openid' => '',
-                'city' => '',
-                'avatar_url' => '',
-                'country' => '',
-                'gender' => '',
-                'language' => '',
-                'nick_name' => '',
-                'province' => '',
-                'phone' => $phone,
+                'phone' => $phoneNumber,
+                'nick_name' => '用户' . rand(pow(10, (6 - 1)), pow(10, 6) - 1)
             ];
             $result = $userService->addUser($userData);
             if (!$result) {
@@ -169,6 +170,22 @@ class LoginController extends Controller
             return response()->json($userData);
         }
         return response()->json($user);
+    }
+
+    /**
+     * 发送短信验证码
+     *
+     * @param $phoneNumber
+     * @return JsonResponse
+     */
+    public function sendLoginValidCode($phoneNumber)
+    {
+        $code = rand(pow(10, (6 - 1)), pow(10, 6) - 1);
+        Cache::put($phoneNumber, $code, 300);
+        Log::error("发送验证码", [$code]);
+        event(new SendSMSValidCode($phoneNumber, $code));
+
+        return response()->json(['msg' => 'ok']);
     }
 
 }

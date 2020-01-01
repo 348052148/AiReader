@@ -7,7 +7,6 @@ use App\BookSource;
 use App\Events\BookShelfUpdated;
 use App\Events\FlushBookChapterCount;
 use Exception;
-use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Srv\ChapterContentRequest;

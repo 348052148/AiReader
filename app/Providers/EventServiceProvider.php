@@ -31,6 +31,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\FlushBookChapterCount' => [
             'App\Listeners\FlushBookChapterCountListener'
         ],
+        'App\Events\SendSMSValidCode' => [
+            'App\Listeners\SendSMSValidCodeListener'
+        ]
     ];
 
     /**
