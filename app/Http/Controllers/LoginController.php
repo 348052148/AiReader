@@ -126,6 +126,11 @@ class LoginController extends Controller
             throw new \Exception('验证码错误');
         }
 
+        $user = $userService->fundUserByPhone($phoneNumber);
+        if ($user) {
+            throw new \Exception('用户已存在');
+        }
+
         $userData = [
             'nick_name' => '用户' . rand(pow(10, (6 - 1)), pow(10, 6) - 1),
             'phone' => $phoneNumber,
