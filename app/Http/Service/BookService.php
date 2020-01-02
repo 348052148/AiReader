@@ -224,6 +224,9 @@ class BookService
     {
         $chapters = Cache::get("chapters:{$bookId}", function () use ($bookId) {
             $bookSource = $this->getLastBookSource($bookId);
+            if (empty($bookSource)) {
+                throw new Exception('获取来源信息失败');
+            }
             list($result, $status) = GrpcService::simpleRequest(
                 '/srv.ParserService/ParserChapters',
                 new ChapterRequest(['link' => $bookSource['chapter_link'], 'source' => $bookSource['source']]),
