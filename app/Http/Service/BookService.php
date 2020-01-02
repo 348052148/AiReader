@@ -136,7 +136,7 @@ class BookService
             return 'xbiquge';
         } elseif ($source == '杂读小说网') {
             return 'zadu';
-        }else if ($source == '17k') {
+        } else if ($source == '17k') {
             return '17k';
         }
 
@@ -317,37 +317,47 @@ class BookService
      */
     public function storeNextChapterContents($chapterId)
     {
-        list($bookId, $index) = explode(':', $chapterId);
-        $nextChapter = $this->getBookChapterByIndex($bookId, $index + 1);
-        if (!$nextChapter) {
-            return;
-        }
-        //缓存
-        $key = "chapterContents:{$nextChapter['chapter_id']}";
-        if (!Cache::has($key)) {
-            //$contents = QuanWenParser::convertCatelogContents($nextChapter['content_link']);
-            $contents = $this->cacheChapterContents($nextChapter['chapter_id']);
-            Cache::put($key, $contents, 86400);
+        try {
+            list($bookId, $index) = explode(':', $chapterId);
+            $nextChapter = $this->getBookChapterByIndex($bookId, $index + 1);
+            if (!$nextChapter) {
+                return;
+            }
+            //缓存
+            $key = "chapterContents:{$nextChapter['chapter_id']}";
+            if (!Cache::has($key)) {
+                //$contents = QuanWenParser::convertCatelogContents($nextChapter['content_link']);
+                $contents = $this->cacheChapterContents($nextChapter['chapter_id']);
+                Cache::put($key, $contents, 86400);
+            }
+        } catch (Exception $exception) {
+            Log::error("缓存下一章节内容异常", [$exception->getMessage()]);
         }
     }
 
     protected function cacheChapterContents($chapterId)
     {
-        $chapter = $this->getChapterInfoById($chapterId);
+        try {
+            $chapter = $this->getChapterInfoById($chapterId);
 
-        //$contents = QuanWenParser::convertCatelogContents($chapter['content_link']);
-        //解析内容服务
-        list($result, $status) = GrpcService::simpleRequest(
-            '/srv.ParserService/ParserChapterContents',
-            new ChapterContentRequest(['link' => $chapter['content_link'], 'source' => $chapter['source']]),
-            [ChapterContentResponse::class, 'decode']
-        )->wait();
+            //$contents = QuanWenParser::convertCatelogContents($chapter['content_link']);
+            //解析内容服务
+            list($result, $status) = GrpcService::simpleRequest(
+                '/srv.ParserService/ParserChapterContents',
+                new ChapterContentRequest(['link' => $chapter['content_link'], 'source' => $chapter['source']]),
+                [ChapterContentResponse::class, 'decode']
+            )->wait();
 
-        if ($status->code) {
-            throw new Exception($status->details);
+            if ($status->code) {
+                throw new Exception($status->details);
+            }
+
+            return $result->getContents();
+
+        } catch (Exception $exception) {
+            Log::error("缓存章节内容异常", [$exception->getMessage()]);
+            return "";
         }
-
-        return $result->getContents();
     }
 
     /**
@@ -357,16 +367,20 @@ class BookService
      */
     public function storeBookContents($bookId)
     {
-        $chapter = $this->getBookChapterByIndex($bookId, 0);
-        if (!$chapter) {
-            return;
-        }
-        //缓存book
-        $key = "chapterContents:{$chapter['chapter_id']}";
-        if (!Cache::has($key)) {
-            //$contents = QuanWenParser::convertCatelogContents($chapter['content_link']);
-            $contents = $this->cacheChapterContents($chapter['chapter_id']);
-            Cache::put($key, $contents, 86400);
+        try {
+            $chapter = $this->getBookChapterByIndex($bookId, 0);
+            if (!$chapter) {
+                return;
+            }
+            //缓存book
+            $key = "chapterContents:{$chapter['chapter_id']}";
+            if (!Cache::has($key)) {
+                //$contents = QuanWenParser::convertCatelogContents($chapter['content_link']);
+                $contents = $this->cacheChapterContents($chapter['chapter_id']);
+                Cache::put($key, $contents, 86400);
+            }
+        } catch (Exception $exception) {
+            Log::error("缓存内容异常", [$exception->getMessage()]);
         }
     }
 
