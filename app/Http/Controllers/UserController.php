@@ -50,6 +50,26 @@ class UserController extends Controller
     }
 
     /**
+     * 批量删除
+     * @param Request $request
+     * @param BookShelfService $bookShelfService
+     * @param $userId
+     * @return JsonResponse
+     */
+    public function removeBooksForBookShelf(Request $request, BookShelfService $bookShelfService, $userId)
+    {
+        $bookIds = $request->input('bookIds');
+        foreach ($bookIds as $bookId) {
+            $result = $bookShelfService->removeBookFromUserBookShelf($userId, $bookId);
+            if ($result) {
+                return response()->json('删除失败', 500);
+            }
+        }
+
+        return response()->json();
+    }
+
+    /**
      * @param Request $request
      * @param BookShelfService $bookShelfService
      * @param $userId
