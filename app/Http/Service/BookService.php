@@ -181,16 +181,15 @@ class BookService
                     ];
                 }
             }
-
-            Cache::put("bookSourceMeta:{$bookId}", $chapterMetas, 86400);
-
             if (empty($chapterMetas)) {
                 $source = head($sourceList);
                 $chapterMetas = [
-                    'source' =>$source['source'],
+                    'source' => $source['source'],
                     'chapterLink' => $source['chapter_link'],
                     'chapter_count' => 1,
                 ];
+            } else {
+                Cache::put("bookSourceMeta:{$bookId}", $chapterMetas, 86400);
             }
 
             return $chapterMetas;
