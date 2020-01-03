@@ -131,10 +131,11 @@ class BookController extends Controller
         $page = $request->input('page', null);
         $chapterList = $bookService->getBookChapters($bookId);
         if (!is_null($page)) {
+            $list = collect($chapterList)->forPage($page, 100);
             return response()->json([
                 'page' => $page,
-                'count' => 20,
-                'list' => collect($chapterList)->forPage($page, 100)
+                'count' => $list->count(),
+                'list' => $list
             ]);
         } else {
             return response()->json($chapterList);
