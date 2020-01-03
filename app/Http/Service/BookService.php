@@ -168,7 +168,12 @@ class BookService
                 [SourceChapterResponse::class, 'decode']
             )->wait();
             if ($status->code) {
-                throw new Exception($status->details);
+                $source = head($sourceList);
+                return [
+                    'source' => $source['source'],
+                    'chapter_link' => $source['chapter_link'],
+                    'chapter_count' => 1,
+                ];
             }
             $chapterMetas = [];
             foreach ($result->getChapterInfo() as $chapterInfo) {
@@ -181,16 +186,7 @@ class BookService
                     ];
                 }
             }
-            if (empty($chapterMetas)) {
-                $source = head($sourceList);
-                $chapterMetas = [
-                    'source' => $source['source'],
-                    'chapterLink' => $source['chapter_link'],
-                    'chapter_count' => 1,
-                ];
-            } else {
-                Cache::put("bookSourceMeta:{$bookId}", $chapterMetas, 86400);
-            }
+            Cache::put("bookSourceMeta:{$bookId}", $chapterMetas, 86400);
 
             return $chapterMetas;
         });
