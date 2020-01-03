@@ -135,7 +135,7 @@ class BookController extends Controller
             return response()->json([
                 'page' => $page,
                 'count' => $list->count(),
-                'list' => $list->toArray()
+                'list' => array_values($list->toArray())
             ]);
         } else {
             return response()->json($chapterList);
