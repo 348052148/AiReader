@@ -56,9 +56,9 @@ class UserController extends Controller
      * @param $userId
      * @return JsonResponse
      */
-    public function removeBooksForBookShelf(Request $request, BookShelfService $bookShelfService, $userId)
+    public function removeBooksForBookShelf(Request $request, BookShelfService $bookShelfService, $userId, $bookIds)
     {
-        $bookIds = $request->input('bookIds');
+        $bookIds = explode(',', $bookIds);
         foreach ($bookIds as $bookId) {
             $result = $bookShelfService->removeBookFromUserBookShelf($userId, $bookId);
             if ($result) {

@@ -82,7 +82,7 @@ Route::get('/user/{openid}', 'UserController@userInfo');
 Route::get('/user/{user_id}/bookshelf', 'UserController@userBookShelf');
 Route::post('/user/{user_id}/bookshelf/{book_id}', 'UserController@addBookForBookShelf');
 Route::delete('/user/{user_id}/bookshelf/{book_id}', 'UserController@removeBookForBookShelf');
-Route::delete('/user/{user_id}/bookshelf/books', 'UserController@removeBooksForBookShelf');
+Route::delete('/user/{user_id}/bookshelf/books/{book_ids}', 'UserController@removeBooksForBookShelf');
 Route::put('/user/{user_id}/bookshelf/{book_id}', 'UserController@updateBookForBookShelf');
 //获取书架书籍状态
 Route::get('/user/{user_id}/bookshelf/state', 'UserController@getBookStateForBookShelf');
