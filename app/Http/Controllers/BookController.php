@@ -128,9 +128,17 @@ class BookController extends Controller
      */
     public function bookChapters(Request $request, BookService $bookService, $bookId)
     {
+        $page = $request->input('page', null);
         $chapterList = $bookService->getBookChapters($bookId);
-
-        return response()->json($chapterList);
+        if (!is_null($page)) {
+            response()->json([
+                'page' => $page,
+                'count' => 20,
+                'list' => collect($chapterList)->forPage($page, 100)
+            ]);
+        } else {
+            return response()->json($chapterList);
+        }
     }
 
     /**
