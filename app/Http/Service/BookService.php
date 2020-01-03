@@ -154,6 +154,7 @@ class BookService
     {
         $chapterMetas = Cache::get("bookSourceMeta:{$bookId}", function () use ($bookId) {
             $sourceList = $this->getBookSourceList($bookId);
+            Log::error('获取源', [$sourceList]);
             $sourceReq = [];
             foreach ($sourceList as $source) {
                 $sourceReq[] = new SourceChapterRequest\ChapterSource([
