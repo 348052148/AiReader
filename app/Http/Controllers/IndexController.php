@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use AlibabaCloud\Client\AlibabaCloud;
+use AlibabaCloud\Client\Exception\ClientException;
+use AlibabaCloud\Client\Exception\ServerException;
 use App\Book;
+use App\Events\SendSMSValidCode;
 use App\Http\Service\BaseService;
 use App\Http\Service\BookService;
+use App\Http\Service\UserService;
 use App\Jobs\StoreChapterContentsJob;
 use GuzzleHttp\Client;
 use Illuminate\Http\JsonResponse;
@@ -17,7 +22,24 @@ class IndexController extends Controller
 
     public function index(BookService $bookService)
     {
-        var_dump($_POST);
+//        $client = new Client();
+//        $headers = [
+//            'CLIENT-IP:58.68.44.21',
+//            'X-FORWARDED-FOR:58.68.44.21',
+//        ];
+//        $request = new \GuzzleHttp\Psr7\Request('GET', 'http://www.quanshuwang.com/book/182/182303/53750266.html', $headers);
+//        $response = $client->send($request, [
+//            'proxy'=> [
+//                'http' => 'http://49.77.208.133:9999'
+//            ]
+//        ]);
+//        $result = $response->getBody()->getContents();
+//        echo $result;
+//        echo md5('zh123');
+        //var_dump((new UserService())->addUser(['phone'=>'13612312']));
+        //echo rand(pow(10,(6-1)), pow(10,6)-1);
+        //event(new SendSMSValidCode("18523922709", 543212));
+//        var_dump($_POST);
 //        $req = parse_url(config('services.sm.bao_url'));
 //        var_dump(parse_query($req['query']));
 //        $client = new Client();
@@ -60,12 +82,12 @@ class IndexController extends Controller
         $banarList = [
             [
                 'title' => '推荐书籍',
-                'img' => 'https://sta-op.douyucdn.cn/nggsys/2019/10/16/e5e1d8fdac31df37f638d678903410be.jpg',
+                'img' => 'https://gw.alicdn.com/L1/723/1568719644/7d/2a/48/7d2a48410b9dd9de64373f1daf56145a.jpg',
                 'link' => ''
             ],
             [
                 'title' => '书籍',
-                'img' => 'https://images.unsplash.com/photo-1551214012-84f95e060dee?w=1200',
+                'img' => 'https://gw.alicdn.com/L1/723/1562656841/c1/76/4f/c1764ff2e1b7b3091300c539800fbde8.jpg',
                 'link' => ''
             ]
         ];
