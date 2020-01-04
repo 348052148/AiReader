@@ -162,7 +162,7 @@ class LoginController extends Controller
             throw new \Exception('验证码错误');
         }
 
-        $user = $userService->fundUserByOpenId($phoneNumber);
+        $user = $userService->fundUserByPhone($phoneNumber);
         if (!$user) {
             $userData = [
                 'phone' => $phoneNumber,
