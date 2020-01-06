@@ -2,9 +2,12 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 
-class User extends Model
+class User extends \Illuminate\Foundation\Auth\User
 {
-    protected $table = 'w_users';
+    protected $table = "w_users";
+
+    protected $fillable = ['phone', 'password', 'api_token', 'nick_name'];
+
+    protected $primaryKey = 'user_id';
 }

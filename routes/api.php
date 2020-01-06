@@ -78,13 +78,13 @@ Route::get('/book/{book_id}/image', 'BookController@image');
 //用户信息
 Route::get('/user/{openid}', 'UserController@userInfo');
 
-//用户书架
+//用户书架 -- 重构
 Route::get('/user/{user_id}/bookshelf', 'UserController@userBookShelf');
 Route::post('/user/{user_id}/bookshelf/{book_id}', 'UserController@addBookForBookShelf');
 Route::delete('/user/{user_id}/bookshelf/{book_id}', 'UserController@removeBookForBookShelf');
 Route::delete('/user/{user_id}/bookshelf/books/{book_ids}', 'UserController@removeBooksForBookShelf');
 Route::put('/user/{user_id}/bookshelf/{book_id}', 'UserController@updateBookForBookShelf');
-//获取书架书籍状态
+//获取书架书籍状态 -- 重构
 Route::get('/user/{user_id}/bookshelf/state', 'UserController@getBookStateForBookShelf');
 
 //小程序登陆
@@ -99,3 +99,25 @@ Route::post('/user/{phone}/login', 'LoginController@loginByPhoneNumberValidCode'
 //
 Route::post('/user/{phone}/sms/code', 'LoginController@sendLoginValidCode');
 
+
+//新auth验证登陆
+Route::post('login', 'Auth\LoginController@login');
+Route::get('login', 'Auth\LoginController@login');
+Route::post('logout', 'Auth\LoginController@logout');
+Route::post('register', 'Auth\RegisterController@register');
+//需要登陆态验证
+Route::middleware('auth')->group(function () {
+    Route::get('api_token', 'Auth\ApiTokenController@update');
+});
+//新接口
+Route::middleware('auth:api')->group(function() {
+    //用户书架
+    Route::get('/bookshelf', 'BookShelf\BookController@books');
+    Route::post('/bookshelf/{book_id}', 'BookShelf\BookController@addBook');
+    Route::delete('/bookshelf/books/{book_ids}', 'BookShelf\BookController@deleteBooks');
+    Route::put('/bookshelf/{book_id}', 'BookShelf\BookController@updateBook');
+    //获取书架书籍状态
+    Route::get('/bookshelf/state', 'UserController@getBookStateForBookShelf');
+    //获取授权用户信息
+    Route::get('/user', 'Auth\ApiTokenController@user');
+});

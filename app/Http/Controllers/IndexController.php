@@ -14,6 +14,7 @@ use App\Jobs\StoreChapterContentsJob;
 use GuzzleHttp\Client;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use function GuzzleHttp\Psr7\parse_query;
 
 class IndexController extends Controller
@@ -22,6 +23,7 @@ class IndexController extends Controller
 
     public function index(BookService $bookService)
     {
+        var_dump(Auth::user());
 //        $client = new Client();
 //        $headers = [
 //            'CLIENT-IP:58.68.44.21',

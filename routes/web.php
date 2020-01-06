@@ -40,3 +40,14 @@ Route::get('/book/image/{book_id}.jpeg', 'BookController@image');
 Route::prefix('reader')->namespace('Reader')->middleware('allow')->group(function (){
     Route::get('/books', 'BookController@books');
 });
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

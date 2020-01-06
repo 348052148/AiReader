@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class LoginController extends Controller
 {
@@ -34,6 +37,27 @@ class LoginController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest')->except('logout');
+    }
+
+    public function username()
+    {
+        return 'phone';
+    }
+
+    //登陆
+    protected function authenticated(Request $request, $user)
+    {
+        $token = Str::random(60);
+
+        $request->user()->forceFill([
+            'api_token' => hash('sha256', $token),
+        ])->save();
+        return response()->json(['user' => Auth::user(), 'token' => $token]);
+    }
+
+    //退出登陆
+    protected function loggedOut(Request $request)
+    {
+        return response()->json(['status' => 'ok']);
     }
 }
