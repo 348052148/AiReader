@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Parser;
 
-use App\Http\Service\Book;
+use App\Book;
 use App\Http\Service\Catalog;
 use App\Http\Service\Classfly;
 use QL\QueryList;
