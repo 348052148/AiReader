@@ -22,7 +22,7 @@ Route::options('/{all}', function (Request $request) {
     // header("Access-Control-Allow-Origin: $origin");
     header("Access-Control-Allow-Credentials: true");
     header('Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE');
-    header('Access-Control-Allow-Headers: Origin, Access-Control-Request-Headers, SERVER_NAME, Access-Control-Allow-Headers, cache-control, token, X-Requested-With, Content-Type, Accept, Connection, User-Agent, Cookie');
+    header('Access-Control-Allow-Headers: Authorization, Origin, Access-Control-Request-Headers, SERVER_NAME, Access-Control-Allow-Headers, cache-control, token, X-Requested-With, Content-Type, Accept, Connection, User-Agent, Cookie');
 })->where(['all' => '(\S|/)+']);
 
 Route::any('/', 'IndexController@index');
@@ -57,24 +57,6 @@ Route::get('/classify/menus', 'ClassifyController@classifyMenus');
 //获取分类下书籍
 Route::get('/classifys/books', 'ClassifyController@classifyBooks');
 
-//获取书籍详情
-Route::get('/book/{book_id}', 'BookController@bookDetail');
-
-//获取章节目录
-Route::get('/book/{book_id}/chapters', 'BookController@bookChapters');
-
-//获取类似的推荐书籍
-Route::get('/book/{book_id}/recommends', 'BookController@recommendAsBooks');
-
-//获取章节内容
-Route::get('/chapter/{chapter_id}/contents', 'BookController@chapterContents');
-
-//获取书籍指定索引章节内容
-Route::get('/book/{book_id}/chapter/{index}/contents', 'BookController@chapterContentsByIndex');
-
-//获取书籍封面图
-Route::get('/book/{book_id}/image', 'BookController@image');
-
 //用户信息
 Route::get('/user/{openid}', 'UserController@userInfo');
 
@@ -105,6 +87,8 @@ Route::post('login', 'Auth\LoginController@login');
 Route::get('login', 'Auth\LoginController@login');
 Route::post('logout', 'Auth\LoginController@logout');
 Route::post('register', 'Auth\RegisterController@register');
+//手机号登陆
+//小程序登陆
 //需要登陆态验证
 Route::middleware('auth')->group(function () {
     Route::get('api_token', 'Auth\ApiTokenController@update');
@@ -120,4 +104,24 @@ Route::middleware('auth:api')->group(function() {
     Route::get('/bookshelf/state', 'UserController@getBookStateForBookShelf');
     //获取授权用户信息
     Route::get('/user', 'Auth\ApiTokenController@user');
+    //应用配置
+    Route::get('/configure', function (){});
 });
+
+//获取书籍详情
+Route::get('/book/{book_id}', 'BookController@bookDetail');
+
+//获取章节目录
+Route::get('/book/{book_id}/chapters', 'BookController@bookChapters');
+
+//获取类似的推荐书籍
+Route::get('/book/{book_id}/recommends', 'BookController@recommendAsBooks');
+
+//获取书籍指定索引章节内容
+Route::get('/book/{book_id}/chapter/{index}/contents', 'BookController@chapterContentsByIndex');
+
+//获取书籍封面图
+Route::get('/book/{book_id}/image', 'BookController@image');
+
+//获取章节内容
+Route::get('/chapter/{chapter_id}/contents', 'BookController@chapterContents');
