@@ -191,7 +191,7 @@ class LoginController extends Controller
         $code = rand(pow(10, (6 - 1)), pow(10, 6) - 1);
         Cache::put($phoneNumber, $code, 300);
         Log::error("发送验证码", [$code]);
-        event(new SendSMSValidCode($phoneNumber, $code));
+//        event(new SendSMSValidCode($phoneNumber, $code));
 
         return response()->json(['msg' => 'ok']);
     }

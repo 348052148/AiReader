@@ -79,12 +79,14 @@ Route::get('/user/{account}/token', 'LoginController@login');
 //手机验证码登陆
 Route::post('/user/{phone}/login', 'LoginController@loginByPhoneNumberValidCode');
 //
-Route::post('/user/{phone}/sms/code', 'LoginController@sendLoginValidCode');
+
 
 
 //新auth验证登陆
 Route::post('login', 'Auth\LoginController@login');
 Route::get('login', 'Auth\LoginController@login');
+Route::post('phone/login', 'Auth\LoginController@loginByPhone');
+Route::post('phone/{phone}/sms', 'Auth\LoginController@sendLoginValidCode');
 Route::post('logout', 'Auth\LoginController@logout');
 Route::post('register', 'Auth\RegisterController@register');
 //手机号登陆
@@ -95,6 +97,7 @@ Route::middleware('auth')->group(function () {
 });
 //新接口
 Route::middleware('auth:api')->group(function() {
+    Route::post('password/rest', 'Auth\ResetPasswordController@restPassword');
     //用户书架
     Route::get('/bookshelf', 'BookShelf\BookController@books');
     Route::post('/bookshelf/{book_id}', 'BookShelf\BookController@addBook');
