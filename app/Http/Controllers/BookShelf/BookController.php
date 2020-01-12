@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\BookShelf;
 
 use App\Http\Controllers\Controller;
+use App\Http\Service\BookService;
 use App\Http\Service\BookShelfService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +15,7 @@ class BookController extends Controller
         $user = Auth::user();
         $books = $bookShelfService->getBooksByUserBookShelf($user['user_id']);
 
-        return response()->json(['books' => $books]);
+        return $this->apiResult(['books' => $books]);
     }
 
     public function addBook(BookShelfService $bookShelfService, Request $request, $bookId)
@@ -24,7 +25,7 @@ class BookController extends Controller
         $readOffset = $request->input('readOffset');
         $result = $bookShelfService->addBookIntoUserBookShelf($user['user_id'], $bookId, $readNum, $readOffset);
 
-        return response()->json($result);
+        return $this->apiResult([]);
     }
 
     public function deleteBooks(BookShelfService $bookShelfService, Request $request, $bookIds)
@@ -38,16 +39,18 @@ class BookController extends Controller
             }
         }
 
-        return response()->json(['status' => 'ok']);
+        return $this->apiResult([]);
     }
 
-    public function updateBook(Request $request, BookShelfService $bookShelfService, $bookId)
+    public function updateBook(Request $request, BookShelfService $bookShelfService, BookService $bookService, $bookId)
     {
         $user = Auth::user();
         $readNum = $request->input('readNum');
         $readOffset = $request->input('readOffset');
-        $result = $bookShelfService->updateBookFromUserBookShelf($user['user_id'], $bookId, $readNum, $readOffset);
+        $chapters = $bookService->getBookChapters($bookId);
+        $readTitle = collect($chapters)->take($readNum);
+        $result = $bookShelfService->updateBookFromUserBookShelf($user['user_id'], $bookId, $readNum, $readOffset, $readTitle);
 
-        return response()->json(['status'=> 'ok']);
+        return $this->apiResult([]);
     }
 }

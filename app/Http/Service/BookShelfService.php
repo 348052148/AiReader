@@ -118,13 +118,15 @@ class BookShelfService
      * @param $bookId
      * @param $readNum
      * @param $readOffset
+     * @param $readTitle
      * @return mixed
      */
-    public function updateBookFromUserBookShelf($userId, $bookId, $readNum, $readOffset)
+    public function updateBookFromUserBookShelf($userId, $bookId, $readNum, $readOffset, $readTitle)
     {
         return BookShelf::where('user_id', $userId)->where('book_id', $bookId)->update([
             'read_num' => $readNum,
             'read_offset' => $readOffset,
+            'chapter_title' => $readTitle,
         ]);
     }
 

@@ -24,11 +24,15 @@ class ApiTokenController extends Controller
             'api_token' => hash('sha256', $token),
         ])->save();
 
-        return response()->json(['token' => $token]);
+        return $this->apiResult([
+            'token' => $token
+        ]);
     }
 
     public function user()
     {
-        return response()->json(['user'=> Auth::user()]);
+        return $this->apiResult([
+            'user' => Auth::user()
+        ]);
     }
 }

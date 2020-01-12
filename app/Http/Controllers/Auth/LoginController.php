@@ -55,13 +55,16 @@ class LoginController extends Controller
         $request->user()->forceFill([
             'api_token' => hash('sha256', $token),
         ])->save();
-        return response()->json(['user' => Auth::user(), 'token' => $token]);
+        return $this->apiResult([
+            'user' => Auth::user(),
+            'token' => $token
+        ]);
     }
 
     //退出登陆
     protected function loggedOut(Request $request)
     {
-        return response()->json(['status' => 'ok']);
+        return $this->apiResult([]);
     }
 
     //登陆byPhone
@@ -105,7 +108,7 @@ class LoginController extends Controller
         $code = rand(pow(10, (6 - 1)), pow(10, 6) - 1);
         Cache::put($phoneNumber, $code, 300);
         event(new SendSMSValidCode($phoneNumber, $code));
-        
-        return response()->json(['message' => 'ok']);
+
+        return $this->apiResult([]);
     }
 }

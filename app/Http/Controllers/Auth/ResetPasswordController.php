@@ -35,7 +35,7 @@ class ResetPasswordController extends Controller
         $user->password = Hash::make($password);
         $user->save();
 
-        return response()->json(['status' => 'ok']);
+        return response()->json(['status' => true]);
     }
 
 }
