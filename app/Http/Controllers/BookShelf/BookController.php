@@ -48,7 +48,7 @@ class BookController extends Controller
         $readNum = $request->input('readNum');
         $readOffset = $request->input('readOffset');
         $chapters = $bookService->getBookChapters($bookId);
-        $readTitle = collect($chapters)->take($readNum);
+        $readTitle = collect($chapters)->take($readNum)['title'];
         $result = $bookShelfService->updateBookFromUserBookShelf($user['user_id'], $bookId, $readNum, $readOffset, $readTitle);
 
         return $this->apiResult([]);
