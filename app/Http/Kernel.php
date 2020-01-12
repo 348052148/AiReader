@@ -63,4 +63,14 @@ class Kernel extends HttpKernel
 
         'allow' => \App\Http\Middleware\AllowOrigin::class,
     ];
+
+    protected $middlewarePriority = [
+        \App\Http\Middleware\AllowOrigin::class,
+        \Illuminate\Session\Middleware\StartSession::class,
+        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        \Illuminate\Auth\Middleware\Authenticate::class,
+        \Illuminate\Session\Middleware\AuthenticateSession::class,
+        \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        \Illuminate\Auth\Middleware\Authorize::class,
+    ];
 }

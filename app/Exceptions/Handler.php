@@ -3,9 +3,12 @@
 namespace App\Exceptions;
 
 use Exception;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Validation\ValidationException;
 
 class Handler extends ExceptionHandler
 {
@@ -51,7 +54,14 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        //return parent::render($request, $exception);
+//        return parent::render($request, $exception);
+        if ($exception instanceof HttpResponseException) {
+            return $exception->getResponse();
+        } elseif ($exception instanceof AuthenticationException) {
+            return response()->json(['status' => false, 'message' => '授权异常，请重新登陆授权']);
+        } elseif ($exception instanceof ValidationException) {
+            return response()->json(['status' => false, 'message' => '验证失败' . $exception->getMessage()]);
+        }
         return response()->json(['status' => false, 'message' => $exception->getMessage()]);
     }
 }
