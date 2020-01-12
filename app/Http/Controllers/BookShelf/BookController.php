@@ -48,8 +48,10 @@ class BookController extends Controller
         $readNum = $request->input('readNum');
         $readOffset = $request->input('readOffset');
         $chapters = $bookService->getBookChapters($bookId);
-        $chapter = collect($chapters)->take($readNum);
-        $result = $bookShelfService->updateBookFromUserBookShelf($user['user_id'], $bookId, $readNum, $readOffset, $chapter['title']);
+        if (!isset($chapters[$readNum])) {
+            throw new \Exception("未找到该章节", 404);
+        }
+        $result = $bookShelfService->updateBookFromUserBookShelf($user['user_id'], $bookId, $readNum, $readOffset, $chapters[$readNum]['title']);
 
         return $this->apiResult([]);
     }
